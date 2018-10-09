@@ -4,6 +4,22 @@
     "license": "MIT",
     "author": "Oleg V. Kuzmin",
     "description": "Firebase Express application",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Inpassor/ts-firebase-app"
+    },
+    "bugs": {
+        "url": "https://github.com/Inpassor/ts-firebase-app/issues"
+    },
+    "homepage": "https://github.com/Inpassor/ts-firebase-app",
+    "keywords": [
+        "firebase",
+        "express",
+        "REST",
+        "serverless",
+        "javascript",
+        "typescript"
+    ],
     "main": "lib/index.js",
     "scripts": {
         "lint": "tslint --project tsconfig.json",
