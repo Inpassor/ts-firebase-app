@@ -93,7 +93,10 @@ export class Model implements IModel {
         if (value) {
             const schema = this._schema[fieldName];
             if (schema && (!schema.validate || schema.validate && schema.validate(value))) {
-                this._data[fieldName] = schema.set ? schema.set(value) : value;
+                if (schema.set && !schema.set(value)) {
+                    return false;
+                }
+                this._data[fieldName] = value;
                 return true;
             }
         }

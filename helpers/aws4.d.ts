@@ -3,7 +3,7 @@
  */
 /// <reference types="node" />
 import { IncomingHttpHeaders } from 'http';
-import { AWS4AuthHeader } from './aws4-auth-header';
+import { AWS4AuthHeader } from '../interfaces';
 export declare class AWS4 {
     static algorithm: string;
     static actionName: string;

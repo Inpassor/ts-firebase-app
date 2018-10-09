@@ -127,15 +127,6 @@ export type FirestoreDocumentChangeType = 'added' | 'removed' | 'modified';
 export interface FirestoreDocumentReference extends admin.firestore.DocumentReference {
 }
 
-export interface FirestoreCollectionReference extends FirestoreQuery {
-    readonly id: string;
-    readonly parent: FirestoreDocumentReference | null;
-    readonly path: string;
-    doc: (documentPath?: string) => FirestoreDocumentReference;
-    add: (data: Data) => Promise<FirestoreDocumentReference>;
-    isEqual: (other: FirestoreCollectionReference) => boolean;
-}
-
 export interface FirestoreDocumentSnapshot extends admin.firestore.DocumentSnapshot {
     readonly exists: boolean;
     readonly ref: FirestoreDocumentReference;
@@ -171,6 +162,15 @@ export interface FirestoreQuery extends admin.firestore.Query {
     stream: () => NodeJS.ReadableStream;
     onSnapshot: (onNext: (snapshot: FirestoreQuerySnapshot) => void, onError?: (error: Error) => void) => () => void;
     isEqual: (other: FirestoreQuery) => boolean;
+}
+
+export interface FirestoreCollectionReference extends FirestoreQuery {
+    readonly id: string;
+    readonly parent: FirestoreDocumentReference | null;
+    readonly path: string;
+    doc: (documentPath?: string) => FirestoreDocumentReference;
+    add: (data: Data) => Promise<FirestoreDocumentReference>;
+    isEqual: (other: FirestoreCollectionReference) => boolean;
 }
 
 export interface FirestoreQuerySnapshot extends admin.firestore.QuerySnapshot {
@@ -298,7 +298,7 @@ export enum ModelFieldType {
 export interface ModelFieldSchema {
     type: ModelFieldType;
     key?: string;
-    set?: (value: any) => void;
+    set?: (value: any) => boolean;
     get?: () => any;
     validate?: (value: any) => boolean;
 }
@@ -344,4 +344,18 @@ export interface IModel extends ModelOptions {
     findAll: <T extends Model>() => Promise<T[]>;
 
     [key: string]: any;
+}
+
+export interface AWS4AuthHeader {
+    credentialScopeRaw?: string;
+    credentialScope?: {
+        accessKeyId: string;
+        dateStamp: string;
+        region: string;
+        service: string;
+        action: string;
+    };
+    signedHeadersRaw?: string;
+    signedHeaders?: string[];
+    signature?: string;
 }

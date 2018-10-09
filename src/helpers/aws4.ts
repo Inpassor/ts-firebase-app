@@ -5,7 +5,7 @@
 import * as crypto from 'crypto-js';
 import {IncomingHttpHeaders} from 'http';
 
-import {AWS4AuthHeader} from './aws4-auth-header';
+import {AWS4AuthHeader} from '../interfaces';
 
 export class AWS4 {
 
