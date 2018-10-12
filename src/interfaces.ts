@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as express from 'express';
-import {Session} from 'express-session';
+import * as Session from 'express-session/session/session';
 
 import {Component} from './component';
 import {Model} from './model';
@@ -19,15 +19,6 @@ export enum AuthType {
     none,
     bearer,
     aws4,
-}
-
-export interface OauthProvider {
-    id: string;
-    name: string;
-    appId?: number;
-    appSecret?: string;
-    clientId?: number;
-    clientSecret?: string;
 }
 
 export interface BodyParserBasicOptions {
@@ -88,9 +79,6 @@ export interface AppConfig {
             region: string;
             authHeaderName?: string;
         },
-    };
-    oAuth?: {
-        providers: OauthProvider[];
     };
 }
 
