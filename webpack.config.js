@@ -1,6 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-
+const dtsBundle = require('dts-bundle-webpack');
 const __root = path.resolve(__dirname);
 
 module.exports = {
@@ -31,4 +31,11 @@ module.exports = {
     watchOptions: {
         ignored: /node_modules/,
     },
+    plugins: [
+        new dtsBundle({
+            name: '@inpassor/firebase-app',
+            main: __root + '/src/index.d.ts',
+            out: __root + '/lib/index.d.ts',
+        }),
+    ],
 };
