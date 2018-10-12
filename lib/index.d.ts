@@ -78,15 +78,24 @@ declare module '@inpassor/firebase-app/interfaces' {
         models?: {
             [key: string]: typeof Model;
         };
-        helmet?: {};
+        helmet?: {
+            [key: string]: any;
+        };
         session?: {
             name: string;
             secret: string;
             resave: boolean;
             saveUninitialized: boolean;
         };
-        cors?: {};
-        cookieParser?: {};
+        cors?: {
+            [key: string]: any;
+        };
+        cookieParser?: {
+            secret?: string | string[];
+            options?: {
+                [key: string]: any;
+            };
+        };
         bodyParser?: {
             raw?: BodyParserBasicOptions;
             json?: BodyParserJsonOptions;
