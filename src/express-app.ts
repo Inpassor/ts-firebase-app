@@ -29,8 +29,8 @@ export const expressApp = (config: AppConfig): Express => {
     if (config.cors) {
         app.use(cors(config.cors));
     }
-    if (config.cookieParser) {
-        app.use(cookieParser(config.cookieParser));
+    if (config.cookieParser && config.cookieParser.secret) {
+        app.use(cookieParser(config.cookieParser.secret, config.cookieParser.options));
     }
     if (config.bodyParser) {
         if (config.bodyParser.raw) {
