@@ -4,6 +4,7 @@ import * as session from 'express-session';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
+import * as ejs from 'ejs';
 import * as sanitizer from 'express-sanitizer';
 
 import {
@@ -61,6 +62,11 @@ export const expressApp = (config: AppConfig): Express => {
             routes: config.routes,
             authType: config.authType,
         }));
+    }
+    if (config.viewsPath) {
+        app.set('views', config.viewsPath);
+        app.set('view engine', 'ejs');
+        app.engine(config.viewsExtension || 'html', ejs.renderFile);
     }
     return app;
 };

@@ -55,6 +55,8 @@ export interface AppConfigFirebase {
 export interface AppConfig {
     authType?: AuthType | number;
     routes?: Route[];
+    viewsPath?: string;
+    viewsExtension?: string;
     models?: { [key: string]: typeof Model };
     helmet?: { [key: string]: any };
     session?: {
