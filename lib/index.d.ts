@@ -75,6 +75,8 @@ declare module '@inpassor/firebase-app/interfaces' {
     export interface AppConfig {
         authType?: AuthType | number;
         routes?: Route[];
+        viewsPath?: string;
+        viewsExtension?: string;
         models?: {
             [key: string]: typeof Model;
         };
