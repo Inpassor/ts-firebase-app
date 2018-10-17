@@ -1,7 +1,5 @@
-import * as https from 'https';
-import * as zlib from 'zlib';
 import * as fs from 'fs';
-import {IncomingMessage} from 'http';
+import fetch from 'node-fetch';
 import {google} from 'googleapis';
 import * as NodeCache from 'node-cache';
 
@@ -75,30 +73,20 @@ export class FirebaseConfig {
     public getConfig(version?: number): Promise<Data> {
         return new Promise((resolve, reject) => {
             this.getAccessToken().then((accessToken: string) => {
-                const buffer = [];
-                const request = https.request({
-                    hostname: this.host,
-                    path: this.path + (version ? `?version_number=${version}` : ''),
+                fetch(`https://${this.host}${this.path}${version ? `?version_number=${version}` : ''}`, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
                         'Accept-Encoding': 'gzip',
                     },
-                }, (response: IncomingMessage) => {
-                    if (response.statusCode === 200) {
-                        const gunzip = zlib.createGunzip();
-                        response.pipe(gunzip);
-                        gunzip.on('data', (data: any) => {
-                            buffer.push(data.toString());
-                        }).on('end', () => {
-                            this.setETag(<string>response.headers.etag);
-                            resolve(JSON.parse(buffer.join('')));
-                        }).on('error', (error: any) => reject(error));
-                    } else {
-                        reject(response['error'] || 'Unable to get config');
-                    }
-                });
-                request.on('error', (error: any) => reject(error));
-                request.end();
+                })
+                    .then((response: any): Data => {
+                        this.setETag(<string>response.headers.etag);
+                        return response.json();
+                    })
+                    .then((data: Data) => {
+                        resolve(data);
+                    })
+                    .catch((error: any) => reject(error));
             }, (error: any) => reject(error));
         });
     }
@@ -115,23 +103,19 @@ export class FirebaseConfig {
                 if (etag) {
                     headers['If-Match'] = etag;
                 }
-                const request = https.request({
-                    hostname: this.host,
-                    path: this.path,
+                fetch(`https://${this.host}${this.path}`, {
                     method: 'PUT',
                     headers,
-                }, (response: IncomingMessage) => {
-                    if (response.statusCode === 200) {
+                    body: JSON.stringify(config),
+                })
+                    .then((response: any): Data => {
                         this.setETag(<string>response.headers.etag);
+                        return response.json();
+                    })
+                    .then(() => {
                         resolve();
-                    } else {
-                        console.log(response);
-                        reject(response['error'] || 'Unable to publish config');
-                    }
-                });
-                request.on('error', (error: any) => reject(error));
-                request.write(JSON.stringify(config));
-                request.end();
+                    })
+                    .catch((error: any) => reject(error));
             }, (error: any) => reject(error));
         });
     }

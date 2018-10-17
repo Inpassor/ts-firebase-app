@@ -1,6 +1,6 @@
 {
     "name": "@inpassor/firebase-app",
-    "version": "0.1.16",
+    "version": "0.1.17",
     "license": "MIT",
     "author": "Oleg V. Kuzmin",
     "description": "Firebase Express application",
@@ -41,6 +41,7 @@
         "googleapis": "^34.0.0",
         "helmet": "^3.14.0",
         "node-cache": "^4.2.0",
+        "node-fetch": "^2.2.0",
         "webpack": "^4.20.2",
         "webpack-node-externals": "^1.7.2"
     },
