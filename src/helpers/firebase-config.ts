@@ -38,15 +38,15 @@ export class FirebaseConfig {
 
     public getETag(): string {
         if (!this._etag) {
-            this._etag = this._cache.get('--firebase-config-etag--') || null;
+            this._etag = this._cache.get('--firebaseremoteconfig--etag--') || '*';
         }
         return this._etag;
     }
 
     public setETag(etag: string): void {
-        if (etag !== this._etag) {
+        if (etag && etag !== this._etag) {
             this._etag = etag;
-            this._cache.set('--firebase-config-etag--', this._etag);
+            this._cache.set('--firebaseremoteconfig--etag--', this._etag);
         }
     }
 
@@ -73,6 +73,7 @@ export class FirebaseConfig {
     public get(version?: number): Promise<Data> {
         return new Promise((resolve, reject) => {
             this.getAccessToken().then((accessToken: string) => {
+                const errorMessage = 'Invalid response from the Firebase Remote Config service';
                 fetch(`https://${this.host}${this.path}${version ? `?version_number=${version}` : ''}`, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
@@ -80,10 +81,32 @@ export class FirebaseConfig {
                     },
                 })
                     .then((response: any): Data => {
-                        this.setETag(<string>response.headers.etag);
-                        return response.json();
+                        if (response) {
+                            if (response.status === 200) {
+                                this.setETag(response.headers && response.headers.get && response.headers.get('etag'));
+                                return response.json();
+                            } else {
+                                reject(response.statusText || errorMessage);
+                            }
+                        } else {
+                            reject(errorMessage);
+                        }
                     })
-                    .then((data: Data) => resolve(data))
+                    .then((data: Data) => {
+                        if (data && data.parameters) {
+                            const config: Data = {};
+                            for (const key in data.parameters) {
+                                if (data.parameters.hasOwnProperty(key)) {
+                                    config[key] = data.parameters[key]
+                                        && data.parameters[key].defaultValue
+                                        && data.parameters[key].defaultValue.value;
+                                }
+                            }
+                            resolve(config);
+                        } else {
+                            reject(errorMessage);
+                        }
+                    })
                     .catch((error: any) => reject(error));
             }, (error: any) => reject(error));
         });
@@ -92,23 +115,40 @@ export class FirebaseConfig {
     public set(config: Data): Promise<null> {
         return new Promise((resolve, reject) => {
             this.getAccessToken().then((accessToken: string) => {
-                const headers = {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json; UTF-8',
-                    'Accept-Encoding': 'gzip',
+                const body: Data = {
+                    parameters: {},
                 };
-                const etag = this.getETag();
-                if (etag) {
-                    headers['If-Match'] = etag;
+                for (const key in config) {
+                    if (config.hasOwnProperty(key)) {
+                        body.parameters[key] = {
+                            defaultValue: {
+                                value: config[key],
+                            },
+                        };
+                    }
                 }
                 fetch(`https://${this.host}${this.path}`, {
                     method: 'PUT',
-                    headers,
-                    body: config,
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json; UTF-8',
+                        'Accept-Encoding': 'gzip',
+                        'If-Match': this.getETag(),
+                    },
+                    body: JSON.stringify(body),
                 })
                     .then((response: any) => {
-                        console.log(response);
-                        resolve();
+                        const errorMessage = 'Invalid response from the Firebase Remote Config service';
+                        if (response) {
+                            if (response.status === 200) {
+                                this.setETag(response.headers && response.headers.get && response.headers.get('etag'));
+                                resolve();
+                            } else {
+                                reject(response.statusText || errorMessage);
+                            }
+                        } else {
+                            reject(errorMessage);
+                        }
                     })
                     .catch((error: any) => reject(error));
             }, (error: any) => reject(error));
