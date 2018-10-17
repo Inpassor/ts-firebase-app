@@ -33,10 +33,17 @@ export interface BodyParserUrlencodedOptions extends BodyParserBasicOptions {
     extended: boolean;
     parameterLimit?: number;
 }
+export interface AppConfigCache {
+    stdTTL?: number;
+    checkperiod?: number;
+    errorOnMissing?: boolean;
+    useClones?: boolean;
+    deleteOnExpire?: boolean;
+}
 export interface AppConfigFirebase {
     timestampsInSnapshots: boolean;
     projectId?: string;
-    keyFilename?: string;
+    keyFileName?: string;
     databaseAuthVariableOverride?: Object;
     databaseURL?: string;
     serviceAccountId?: string;
@@ -53,6 +60,7 @@ export interface AppConfig {
     helmet?: {
         [key: string]: any;
     };
+    cache?: AppConfigCache;
     session?: {
         name: string;
         secret: string;

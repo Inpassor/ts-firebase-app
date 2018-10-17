@@ -68,13 +68,13 @@ export class FirebaseConfig {
         });
     }
 
-    public getTemplate(): Promise<string> {
+    public getTemplate(version?: number): Promise<string> {
         return new Promise((resolve, reject) => {
             this.getAccessToken().then((accessToken: string) => {
                 const buffer = [];
                 const request = https.request({
                     hostname: this.host,
-                    path: this.path,
+                    path: this.path + (version ? `?version_number=${version}` : ''),
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
                         'Accept-Encoding': 'gzip',

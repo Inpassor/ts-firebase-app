@@ -10,6 +10,7 @@ declare module '@inpassor/firebase-app' {
     export * from '@inpassor/firebase-app/interfaces';
     export * from '@inpassor/firebase-app/firebase-app';
     export * from '@inpassor/firebase-app/model';
+    export * from '@inpassor/firebase-app/helpers/firebase-config';
 }
 
 declare module '@inpassor/firebase-app/component' {
@@ -63,10 +64,17 @@ declare module '@inpassor/firebase-app/interfaces' {
         extended: boolean;
         parameterLimit?: number;
     }
+    export interface AppConfigCache {
+        stdTTL?: number;
+        checkperiod?: number;
+        errorOnMissing?: boolean;
+        useClones?: boolean;
+        deleteOnExpire?: boolean;
+    }
     export interface AppConfigFirebase {
         timestampsInSnapshots: boolean;
         projectId?: string;
-        keyFilename?: string;
+        keyFileName?: string;
         databaseAuthVariableOverride?: Object;
         databaseURL?: string;
         serviceAccountId?: string;
@@ -83,6 +91,7 @@ declare module '@inpassor/firebase-app/interfaces' {
         helmet?: {
             [key: string]: any;
         };
+        cache?: AppConfigCache;
         session?: {
             name: string;
             secret: string;
@@ -388,6 +397,31 @@ declare module '@inpassor/firebase-app/model' {
         static findWhere<T extends Model>(fieldName: string, opStr: FirestoreWhereFilterOp, value: any): Promise<T>;
         findAll: any;
         static findAll<T extends Model>(): Promise<T[]>;
+    }
+}
+
+declare module '@inpassor/firebase-app/helpers/firebase-config' {
+    import { AppConfigCache } from '@inpassor/firebase-app/interfaces';
+    export interface FirebaseConfigOptions {
+        projectId: string;
+        keyFileName: string;
+        host?: string;
+        scopes?: string[];
+        cacheConfig?: AppConfigCache;
+    }
+    export class FirebaseConfig {
+        host: string;
+        scopes: string[];
+        cacheConfig: AppConfigCache;
+        projectId: string;
+        keyFileName: string;
+        path: string;
+        constructor(options: FirebaseConfigOptions);
+        getETag(): string;
+        setETag(etag: string): void;
+        getAccessToken(): Promise<string>;
+        getTemplate(version?: number): Promise<string>;
+        publishTemplate(template: string): Promise<null>;
     }
 }
 
