@@ -34,9 +34,9 @@ export const firebase = (options: AppConfigFirebase) => {
                     appOptions.projectId = options.projectId;
                     firestoreOptions.projectId = options.projectId;
                 }
-                if (options.keyFilename) {
-                    appOptions.credential = admin.credential.cert(options.keyFilename);
-                    firestoreOptions.keyFilename = options.keyFilename;
+                if (options.keyFileName) {
+                    appOptions.credential = admin.credential.cert(options.keyFileName);
+                    firestoreOptions.keyFilename = options.keyFileName;
                 }
                 if (options.databaseAuthVariableOverride) {
                     appOptions.databaseAuthVariableOverride = options.databaseAuthVariableOverride;

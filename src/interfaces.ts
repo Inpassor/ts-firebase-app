@@ -42,10 +42,18 @@ export interface BodyParserUrlencodedOptions extends BodyParserBasicOptions {
     parameterLimit?: number; // Defaults to 1000
 }
 
+export interface AppConfigCache {
+    stdTTL?: number; // Defaults to 0
+    checkperiod?: number; // Defaults to 600
+    errorOnMissing?: boolean; // Defaults to false
+    useClones?: boolean; // Defaults to true
+    deleteOnExpire?: boolean; // Defaults to true
+}
+
 export interface AppConfigFirebase {
     timestampsInSnapshots: boolean;
     projectId?: string;
-    keyFilename?: string;
+    keyFileName?: string;
     databaseAuthVariableOverride?: Object;
     databaseURL?: string;
     serviceAccountId?: string;
@@ -59,6 +67,7 @@ export interface AppConfig {
     viewsExtension?: string;
     models?: { [key: string]: typeof Model };
     helmet?: { [key: string]: any };
+    cache?: AppConfigCache;
     session?: {
         name: string;
         secret: string;
