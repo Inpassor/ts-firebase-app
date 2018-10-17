@@ -1,5 +1,6 @@
 import * as https from 'https';
 import * as zlib from 'zlib';
+import * as fs from 'fs';
 import {IncomingMessage} from 'http';
 import {google} from 'googleapis';
 import * as NodeCache from 'node-cache';
@@ -50,7 +51,7 @@ export class FirebaseConfig {
 
     public getAccessToken(): Promise<string> {
         return new Promise((resolve, reject) => {
-            const key = require(this.keyFileName);
+            const key = JSON.parse(fs.readFileSync(this.keyFileName, 'utf8'));
             const jwtClient = new google.auth.JWT(
                 key.client_email,
                 null,
