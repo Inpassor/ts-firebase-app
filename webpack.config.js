@@ -1,6 +1,7 @@
 const path = require('path');
+const CleanWebpack = require('clean-webpack-plugin');
+const DtsBundle = require('dts-bundle-webpack');
 const nodeExternals = require('webpack-node-externals');
-const dtsBundle = require('dts-bundle-webpack');
 const __root = path.resolve(__dirname);
 
 module.exports = {
@@ -18,21 +19,27 @@ module.exports = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
+            {
+                test: /\.json$/,
+                use: 'json-loader',
+                exclude: /node_modules/,
+            },
         ],
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        filename: 'lib/index.js',
-        path: __root,
+        filename: 'index.js',
+        path: __root + '/lib',
         libraryTarget: 'this',
     },
     watchOptions: {
         ignored: /node_modules/,
     },
     plugins: [
-        new dtsBundle({
+        new CleanWebpack(['lib']),
+        new DtsBundle({
             name: '@inpassor/firebase-app',
             main: __root + '/src/index.d.ts',
             out: __root + '/lib/index.d.ts',
