@@ -420,8 +420,8 @@ declare module '@inpassor/firebase-app/helpers/firebase-config' {
         getETag(): string;
         setETag(etag: string): void;
         getAccessToken(): Promise<string>;
-        getConfig(version?: number): Promise<Data>;
-        publishConfig(config: Data): Promise<null>;
+        get(version?: number): Promise<Data>;
+        set(config: Data): Promise<null>;
     }
 }
 

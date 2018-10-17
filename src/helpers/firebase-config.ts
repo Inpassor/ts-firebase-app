@@ -70,7 +70,7 @@ export class FirebaseConfig {
         });
     }
 
-    public getConfig(version?: number): Promise<Data> {
+    public get(version?: number): Promise<Data> {
         return new Promise((resolve, reject) => {
             this.getAccessToken().then((accessToken: string) => {
                 fetch(`https://${this.host}${this.path}${version ? `?version_number=${version}` : ''}`, {
@@ -83,15 +83,13 @@ export class FirebaseConfig {
                         this.setETag(<string>response.headers.etag);
                         return response.json();
                     })
-                    .then((data: Data) => {
-                        resolve(data);
-                    })
+                    .then((data: Data) => resolve(data))
                     .catch((error: any) => reject(error));
             }, (error: any) => reject(error));
         });
     }
 
-    public publishConfig(config: Data): Promise<null> {
+    public set(config: Data): Promise<null> {
         return new Promise((resolve, reject) => {
             this.getAccessToken().then((accessToken: string) => {
                 const headers = {
@@ -106,13 +104,10 @@ export class FirebaseConfig {
                 fetch(`https://${this.host}${this.path}`, {
                     method: 'PUT',
                     headers,
-                    body: JSON.stringify(config),
+                    body: config,
                 })
-                    .then((response: any): Data => {
-                        this.setETag(<string>response.headers.etag);
-                        return response.json();
-                    })
-                    .then(() => {
+                    .then((response: any) => {
+                        console.log(response);
                         resolve();
                     })
                     .catch((error: any) => reject(error));
