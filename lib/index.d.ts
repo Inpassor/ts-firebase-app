@@ -404,7 +404,8 @@ declare module '@inpassor/firebase-app/helpers/firebase-config' {
     import { AppConfigCache } from '@inpassor/firebase-app/interfaces';
     export interface FirebaseConfigOptions {
         projectId: string;
-        keyFileName: string;
+        clientEmail: string;
+        privateKey: string;
         host?: string;
         scopes?: string[];
         cacheConfig?: AppConfigCache;
@@ -414,7 +415,8 @@ declare module '@inpassor/firebase-app/helpers/firebase-config' {
         scopes: string[];
         cacheConfig: AppConfigCache;
         projectId: string;
-        keyFileName: string;
+        clientEmail: string;
+        privateKey: string;
         path: string;
         constructor(options: FirebaseConfigOptions);
         getETag(): string;
