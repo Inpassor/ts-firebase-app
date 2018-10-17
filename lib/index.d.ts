@@ -401,7 +401,7 @@ declare module '@inpassor/firebase-app/model' {
 }
 
 declare module '@inpassor/firebase-app/helpers/firebase-config' {
-    import { AppConfigCache } from '@inpassor/firebase-app/interfaces';
+    import { Data, AppConfigCache } from '@inpassor/firebase-app/interfaces';
     export interface FirebaseConfigOptions {
         projectId: string;
         keyFileName: string;
@@ -420,8 +420,8 @@ declare module '@inpassor/firebase-app/helpers/firebase-config' {
         getETag(): string;
         setETag(etag: string): void;
         getAccessToken(): Promise<string>;
-        getTemplate(version?: number): Promise<string>;
-        publishTemplate(template: string): Promise<null>;
+        getConfig(version?: number): Promise<Data>;
+        publishConfig(config: Data): Promise<null>;
     }
 }
 

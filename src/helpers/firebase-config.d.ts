@@ -1,4 +1,4 @@
-import { AppConfigCache } from '../interfaces';
+import { Data, AppConfigCache } from '../interfaces';
 export interface FirebaseConfigOptions {
     projectId: string;
     keyFileName: string;
@@ -19,6 +19,6 @@ export declare class FirebaseConfig {
     getETag(): string;
     setETag(etag: string): void;
     getAccessToken(): Promise<string>;
-    getTemplate(version?: number): Promise<string>;
-    publishTemplate(template: string): Promise<null>;
+    getConfig(version?: number): Promise<Data>;
+    publishConfig(config: Data): Promise<null>;
 }

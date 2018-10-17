@@ -5,7 +5,10 @@ import {IncomingMessage} from 'http';
 import {google} from 'googleapis';
 import * as NodeCache from 'node-cache';
 
-import {AppConfigCache} from '../interfaces';
+import {
+    Data,
+    AppConfigCache,
+} from '../interfaces';
 
 export interface FirebaseConfigOptions {
     projectId: string;
@@ -69,7 +72,7 @@ export class FirebaseConfig {
         });
     }
 
-    public getTemplate(version?: number): Promise<string> {
+    public getConfig(version?: number): Promise<Data> {
         return new Promise((resolve, reject) => {
             this.getAccessToken().then((accessToken: string) => {
                 const buffer = [];
@@ -88,10 +91,10 @@ export class FirebaseConfig {
                             buffer.push(data.toString());
                         }).on('end', () => {
                             this.setETag(<string>response.headers.etag);
-                            resolve(buffer.join(''));
+                            resolve(JSON.parse(buffer.join('')));
                         }).on('error', (error: any) => reject(error));
                     } else {
-                        reject(response['error'] || 'Unable to get template');
+                        reject(response['error'] || 'Unable to get config');
                     }
                 });
                 request.on('error', (error: any) => reject(error));
@@ -100,7 +103,7 @@ export class FirebaseConfig {
         });
     }
 
-    public publishTemplate(template: string): Promise<null> {
+    public publishConfig(config: Data): Promise<null> {
         return new Promise((resolve, reject) => {
             this.getAccessToken().then((accessToken: string) => {
                 const headers = {
@@ -122,11 +125,12 @@ export class FirebaseConfig {
                         this.setETag(<string>response.headers.etag);
                         resolve();
                     } else {
-                        reject(response['error'] || 'Unable to publish template');
+                        console.log(response);
+                        reject(response['error'] || 'Unable to publish config');
                     }
                 });
                 request.on('error', (error: any) => reject(error));
-                request.write(template);
+                request.write(JSON.stringify(config));
                 request.end();
             }, (error: any) => reject(error));
         });
