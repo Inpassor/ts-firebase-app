@@ -8,7 +8,8 @@ import {AppConfigCache} from '../interfaces';
 
 export interface FirebaseConfigOptions {
     projectId: string;
-    keyFileName: string;
+    clientEmail: string;
+    privateKey: string;
     host?: string;
     scopes?: string[];
     cacheConfig?: AppConfigCache;
@@ -22,7 +23,8 @@ export class FirebaseConfig {
     ];
     public cacheConfig: AppConfigCache = null;
     public projectId: string = null;
-    public keyFileName: string = null;
+    public clientEmail: string = null;
+    public privateKey: string = null;
     public path: string = null;
 
     private _cache: NodeCache = null;
@@ -50,11 +52,10 @@ export class FirebaseConfig {
 
     public getAccessToken(): Promise<string> {
         return new Promise((resolve, reject) => {
-            const key = require(this.keyFileName);
             const jwtClient = new google.auth.JWT(
-                key.client_email,
+                this.clientEmail,
                 null,
-                key.private_key,
+                this.privateKey,
                 this.scopes,
                 null
             );

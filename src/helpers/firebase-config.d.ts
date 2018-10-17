@@ -1,7 +1,8 @@
 import { AppConfigCache } from '../interfaces';
 export interface FirebaseConfigOptions {
     projectId: string;
-    keyFileName: string;
+    clientEmail: string;
+    privateKey: string;
     host?: string;
     scopes?: string[];
     cacheConfig?: AppConfigCache;
@@ -11,7 +12,8 @@ export declare class FirebaseConfig {
     scopes: string[];
     cacheConfig: AppConfigCache;
     projectId: string;
-    keyFileName: string;
+    clientEmail: string;
+    privateKey: string;
     path: string;
     private _cache;
     private _etag;
