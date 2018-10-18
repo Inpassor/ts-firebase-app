@@ -1,6 +1,6 @@
 {
     "name": "@inpassor/firebase-app",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "license": "MIT",
     "author": "Oleg V. Kuzmin",
     "description": "Firebase Express application",
@@ -28,7 +28,7 @@
         "build": "tsc"
     },
     "dependencies": {
-        "@inpassor/functions": "^0.2.0",
+        "@inpassor/functions": "^0.2.2",
         "body-parser": "^1.18.3",
         "cookie-parser": "^1.4.3",
         "cors": "^2.8.4",
