@@ -1,5 +1,5 @@
 import {ExpressRequest} from '../interfaces';
-import {AWS4} from '@inpassor/functions';
+import {AWS4} from '@inpassor/functions/lib/aws4';
 
 export const validateAWS4 = (request: ExpressRequest): boolean => {
     const config = request.app.config;
