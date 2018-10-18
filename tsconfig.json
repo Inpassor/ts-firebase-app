@@ -2,7 +2,7 @@
     "compileOnSave": false,
     "compilerOptions": {
         "baseUrl": "src",
-        "outDir": "./src",
+        "outDir": "./lib",
         "paths": {
         },
         "sourceMap": true,
@@ -19,7 +19,8 @@
             "node"
         ],
         "lib": [
-            "es6"
+            "es6",
+            "dom"
         ]
     },
     "include": [

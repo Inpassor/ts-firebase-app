@@ -1,1 +1,1 @@
-# Firebase app
+# Firebase Express application
