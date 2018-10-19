@@ -83,7 +83,7 @@ export const expressApp = (config: AppConfig): Express => {
             });
         }
         const cookieOptions = config.session.cookie || {};
-        if (app.get('env') === 'production') {
+        if (process.env.NODE_ENV === 'production') {
             app.set('trust proxy', 1);
             cookieOptions.secure = true;
         } else {
