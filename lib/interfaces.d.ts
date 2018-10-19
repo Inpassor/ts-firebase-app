@@ -66,9 +66,10 @@ export interface AppConfig {
         [key: string]: any;
     };
     cache?: AppConfigCache;
+    firebase?: AppConfigFirebase;
     session?: {
-        name: string;
         secret: string;
+        name?: string;
         cookie?: {
             domain?: string;
             expires?: Date;
@@ -90,7 +91,7 @@ export interface AppConfig {
     cookieParser?: {
         secret?: string | string[];
         options?: {
-            [key: string]: any;
+            decode: Function;
         };
     };
     bodyParser?: {
@@ -100,7 +101,6 @@ export interface AppConfig {
         urlencoded?: BodyParserUrlencodedOptions;
     };
     sanitizer?: {};
-    firebase?: AppConfigFirebase;
     aws?: {
         appSync?: {
             accessKeyId: string;

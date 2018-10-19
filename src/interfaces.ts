@@ -73,9 +73,10 @@ export interface AppConfig {
     models?: { [key: string]: typeof Model };
     helmet?: { [key: string]: any };
     cache?: AppConfigCache;
+    firebase?: AppConfigFirebase;
     session?: {
-        name: string;
         secret: string;
+        name?: string;
         cookie?: {
             domain?: string;
             expires?: Date;
@@ -94,7 +95,9 @@ export interface AppConfig {
     cors?: { [key: string]: any };
     cookieParser?: {
         secret?: string | string[];
-        options?: { [key: string]: any };
+        options?: {
+            decode: Function;
+        };
     };
     bodyParser?: {
         raw?: BodyParserBasicOptions;
@@ -103,7 +106,6 @@ export interface AppConfig {
         urlencoded?: BodyParserUrlencodedOptions;
     };
     sanitizer?: {};
-    firebase?: AppConfigFirebase;
     aws?: {
         appSync?: {
             accessKeyId: string;
