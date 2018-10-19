@@ -78,8 +78,8 @@ export const expressApp = (config: AppConfig): Express => {
 
     if (config.session) {
         const sessionOptions: Data = {
-            resave: true,
-            saveUninitialized: true
+            resave: false,
+            saveUninitialized: false
         };
         if (config.session.firestoreCollection && app.locals.firestore) {
             sessionOptions.store = new (FirestoreStore(session))({
@@ -87,6 +87,7 @@ export const expressApp = (config: AppConfig): Express => {
                 collection: config.session.firestoreCollection,
             });
         }
+        app.set('trust proxy', 1);
         app.use(session(Object.assign({}, config.session, sessionOptions)));
     }
 
