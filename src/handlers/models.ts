@@ -14,7 +14,7 @@ export const models = (options: { [key: string]: typeof Model }) => {
                 _models[modelName].modelName = modelName;
                 _models[modelName].request = request;
                 _models[modelName].response = response;
-                _models[modelName].firestore = request.firestore;
+                _models[modelName].firestore = request.app.locals.firestore;
             }
         }
         request.models = _models;

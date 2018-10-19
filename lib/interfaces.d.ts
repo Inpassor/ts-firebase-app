@@ -10,6 +10,11 @@ export interface Data {
 export declare type PathParams = string | RegExp | Array<string | RegExp>;
 export interface Express extends express.Express {
     config: AppConfig;
+    locals: {
+        firebaseApp: admin.app.App;
+        firestore: admin.firestore.Firestore;
+        [key: string]: any;
+    };
 }
 export declare enum AuthType {
     none = 0,
@@ -64,8 +69,20 @@ export interface AppConfig {
     session?: {
         name: string;
         secret: string;
-        resave: boolean;
-        saveUninitialized: boolean;
+        cookie?: {
+            domain?: string;
+            expires?: Date;
+            httpOnly?: boolean;
+            maxAge?: number;
+            path?: string;
+            sameSite?: boolean | string;
+            secure?: boolean;
+        };
+        genid?: (request: express.Request) => string;
+        proxy?: boolean;
+        rolling?: boolean;
+        firestoreCollection?: string;
+        unset?: 'destroy' | 'keep';
     };
     cors?: {
         [key: string]: any;

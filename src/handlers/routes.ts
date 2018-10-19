@@ -48,7 +48,7 @@ export const routes = (options: {
             const component = new route.component({
                 request,
                 response,
-                firestore: request.firestore,
+                firestore: request.app.locals.firestore,
             });
             for (let j = 0, k = methods.length; j < k; j++) {
                 const method = methods[j];
