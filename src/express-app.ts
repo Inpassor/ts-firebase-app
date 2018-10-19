@@ -82,7 +82,7 @@ export const expressApp = (config: AppConfig): Express => {
             saveUninitialized: true
         };
         if (config.session.firestoreCollection && app.locals.firestore) {
-            sessionOptions.store = new FirestoreStore(session)({
+            sessionOptions.store = new (FirestoreStore(session))({
                 database: app.locals.firestore,
                 collection: config.session.firestoreCollection,
             });
