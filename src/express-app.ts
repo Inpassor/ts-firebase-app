@@ -6,7 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as ejs from 'ejs';
 import * as sanitizer from 'express-sanitizer';
-import FirestoreStore from 'firestore-store';
+import * as FirestoreStore from 'firestore-store';
 
 import {
     Data,
