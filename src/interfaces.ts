@@ -76,6 +76,8 @@ export interface AppConfig {
     firebase?: AppConfigFirebase;
     session?: {
         secret: string;
+        resave: boolean;
+        saveUninitialized: boolean;
         name?: string;
         cookie?: {
             domain?: string;
@@ -91,6 +93,7 @@ export interface AppConfig {
         rolling?: boolean;
         firestoreCollection?: string;
         unset?: 'destroy' | 'keep';
+        store?: Function;
     };
     cors?: { [key: string]: any };
     cookieParser?: {
