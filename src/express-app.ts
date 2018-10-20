@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as session from 'express-session';
@@ -6,9 +7,9 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as ejs from 'ejs';
 import * as sanitizer from 'express-sanitizer';
-import * as FirestoreStore from 'firestore-store';
 
 import {
+    Data,
     Express,
     AppConfig,
 } from './interfaces';
@@ -17,7 +18,7 @@ import {
     models,
     routes,
 } from './handlers';
-import * as admin from "firebase-admin";
+import {FirestoreStore} from './helpers';
 
 export const expressApp = (config: AppConfig): Express => {
     const app = <Express>express();
@@ -77,21 +78,25 @@ export const expressApp = (config: AppConfig): Express => {
     }
 
     if (config.session) {
-        if (config.session.firestoreCollection && app.locals.firestore && !config.session.store) {
-            config.session.store = new (FirestoreStore(session))({
+        const sessionOptions: {
+            cookie: Data;
+            store?: any;
+        } = {
+            cookie: config.session.cookie || {},
+        };
+        if (config.session.firestoreCollection && app.locals.firestore) {
+            sessionOptions.store = new FirestoreStore({
                 database: app.locals.firestore,
                 collection: config.session.firestoreCollection,
             });
         }
-        const cookieOptions = config.session.cookie || {};
         if (app.env === 'production') {
             app.set('trust proxy', 1);
-            cookieOptions.secure = true;
+            sessionOptions.cookie.secure = true;
         } else {
-            cookieOptions.secure = false;
+            sessionOptions.cookie.secure = false;
         }
-        config.session.cookie = cookieOptions;
-        app.use(session(config.session));
+        app.use(session(Object.assign({}, config.session, sessionOptions)));
     }
 
     if (config.cors) {

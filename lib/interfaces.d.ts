@@ -87,7 +87,6 @@ export interface AppConfig {
         rolling?: boolean;
         firestoreCollection?: string;
         unset?: 'destroy' | 'keep';
-        store?: Function;
     };
     cors?: {
         [key: string]: any;
