@@ -10,6 +10,7 @@ export interface Data {
 export declare type PathParams = string | RegExp | Array<string | RegExp>;
 export interface Express extends express.Express {
     config: AppConfig;
+    env: string;
     locals: {
         firebaseApp: admin.app.App;
         firestore: admin.firestore.Firestore;
