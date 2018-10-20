@@ -7,12 +7,11 @@ export const sanitize = (request: ExpressRequest, response: ExpressResponse, nex
     if (request.sanitize) {
         const sanitizeData = (source: string): void => {
             for (const key in request[source]) {
-                if (
-                    request[source].hasOwnProperty
-                    && request[source].hasOwnProperty(key)
-                    && typeof request[source][key] === 'string'
-                ) {
-                    request[source][key] = request.sanitize(request[source][key]);
+                try {
+                    if (request[source].hasOwnProperty(key) && typeof request[source][key] === 'string') {
+                        request[source][key] = request.sanitize(request[source][key]);
+                    }
+                } catch (e) {
                 }
             }
         };
