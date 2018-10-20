@@ -22,6 +22,7 @@ import * as admin from "firebase-admin";
 export const expressApp = (config: AppConfig): Express => {
     const app = <Express>express();
     app.config = config;
+    app.env = process.env.NODE_ENV;
 
     if (config.helmet) {
         app.use(helmet(config.helmet));
@@ -83,7 +84,7 @@ export const expressApp = (config: AppConfig): Express => {
             });
         }
         const cookieOptions = config.session.cookie || {};
-        if (process.env.NODE_ENV === 'production') {
+        if (app.env === 'production') {
             app.set('trust proxy', 1);
             cookieOptions.secure = true;
         } else {
