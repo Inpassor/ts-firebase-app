@@ -1,7 +1,6 @@
 /// <reference types="node" />
 import * as admin from 'firebase-admin';
 import * as express from 'express';
-import * as Session from 'express-session/session/session';
 import { Component } from './component';
 import { Model } from './model';
 export interface Data {
@@ -116,7 +115,10 @@ export interface ExpressRequest extends express.Request {
     app: Express;
     firebaseApp: admin.app.App;
     firestore: Firestore;
-    session: Session;
+    session: {
+        save: (error: any) => void;
+        [key: string]: any;
+    };
     authType?: AuthType | number;
     sanitize?: (value: any) => any;
     models?: {
