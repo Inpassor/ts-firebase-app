@@ -78,7 +78,7 @@ export interface AppConfig {
             httpOnly?: boolean;
             maxAge?: number;
             path?: string;
-            sameSite?: boolean | string;
+            sameSite?: boolean | 'lax' | 'strict';
             secure?: boolean;
         };
         genid?: (request: express.Request) => string;
@@ -115,10 +115,21 @@ export interface ExpressRequest extends express.Request {
     app: Express;
     firebaseApp: admin.app.App;
     firestore: Firestore;
-    session: {
+    session?: {
+        id: string;
+        cookie: {
+            expires?: false | Date;
+            maxAge?: number;
+            originalMaxAge?: number;
+        };
+        regenerate: (error: any) => void;
+        destroy: (error: any) => void;
+        reload: (error: any) => void;
         save: (error: any) => void;
+        touch: () => void;
         [key: string]: any;
     };
+    sessionID?: string;
     authType?: AuthType | number;
     sanitize?: (value: any) => any;
     models?: {
