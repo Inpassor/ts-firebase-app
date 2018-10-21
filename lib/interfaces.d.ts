@@ -54,6 +54,18 @@ export interface AppConfigFirebase {
     serviceAccountId?: string;
     storageBucket?: string;
 }
+export declare type CustomOrigin = (requestOrigin: string, callback: (err: Error | null, allow?: boolean) => void) => void;
+export interface CorsOptions {
+    origin?: boolean | string | RegExp | (string | RegExp)[] | CustomOrigin;
+    methods?: string | string[];
+    allowedHeaders?: string | string[];
+    exposedHeaders?: string | string[];
+    credentials?: boolean;
+    maxAge?: number;
+    preflightContinue?: boolean;
+    optionsSuccessStatus?: number;
+}
+export declare type CorsOptionsDelegate = (req: express.Request, callback: (err: Error | null, options?: CorsOptions) => void) => void;
 export interface AppConfig {
     authType?: AuthType | number;
     routes?: Route[];
@@ -86,10 +98,9 @@ export interface AppConfig {
         rolling?: boolean;
         firestoreCollection?: string;
         unset?: 'destroy' | 'keep';
+        store?: any;
     };
-    cors?: {
-        [key: string]: any;
-    };
+    cors?: CorsOptions | CorsOptionsDelegate;
     cookieParser?: {
         secret?: string | string[];
         options?: {
