@@ -9,7 +9,6 @@ import * as ejs from 'ejs';
 import * as sanitizer from 'express-sanitizer';
 
 import {
-    Data,
     Express,
     AppConfig,
 } from './interfaces';
@@ -78,8 +77,11 @@ export const expressApp = (config: AppConfig): Express => {
     }
 
     if (config.session) {
+        const sessionOptions: {
+            store?: any;
+        } = {};
         if (config.session.firestoreCollection && app.locals.firestore && !config.session.store) {
-            config.session.store = new FirestoreStore({
+            sessionOptions.store = new FirestoreStore({
                 database: app.locals.firestore,
                 collection: config.session.firestoreCollection,
             });
@@ -87,7 +89,7 @@ export const expressApp = (config: AppConfig): Express => {
         if (config.session.cookie && config.session.cookie.secure) {
             app.set('trust proxy', 1);
         }
-        app.use(session(config.session));
+        app.use(session(Object.assign({}, config.session, sessionOptions)));
     }
 
     if (config.cors) {
