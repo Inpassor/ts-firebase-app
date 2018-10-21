@@ -94,7 +94,16 @@ export interface AppConfig {
         firestoreCollection?: string;
         unset?: 'destroy' | 'keep';
     };
-    cors?: { [key: string]: any };
+    cors?: {
+        origin?: boolean | string | RegExp | string[] | RegExp[] | Function;
+        methods?: string | string[];
+        allowedHeaders?: string | string[];
+        exposedHeaders?: string | string[];
+        credentials?: boolean;
+        maxAge?: number;
+        preflightContinue?: boolean;
+        optionsSuccessStatus?: number;
+    };
     cookieParser?: {
         secret?: string | string[];
         options?: {
