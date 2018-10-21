@@ -114,6 +114,7 @@ export interface AppConfig {
         rolling?: boolean;
         firestoreCollection?: string;
         unset?: 'destroy' | 'keep';
+        store?: any;
     };
     cors?: CorsOptions | CorsOptionsDelegate;
     cookieParser?: {

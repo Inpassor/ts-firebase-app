@@ -78,25 +78,16 @@ export const expressApp = (config: AppConfig): Express => {
     }
 
     if (config.session) {
-        const sessionOptions: {
-            cookie: Data;
-            store?: any;
-        } = {
-            cookie: config.session.cookie || {},
-        };
-        if (config.session.firestoreCollection && app.locals.firestore) {
-            sessionOptions.store = new FirestoreStore({
+        if (config.session.firestoreCollection && app.locals.firestore && !config.session.store) {
+            config.session.store = new FirestoreStore({
                 database: app.locals.firestore,
                 collection: config.session.firestoreCollection,
             });
         }
-        if (app.env === 'production') {
+        if (config.session.cookie && config.session.cookie.secure) {
             app.set('trust proxy', 1);
-            sessionOptions.cookie.secure = true;
-        } else {
-            sessionOptions.cookie.secure = false;
         }
-        app.use(session(Object.assign({}, config.session, sessionOptions)));
+        app.use(session(config.session));
     }
 
     if (config.cors) {
