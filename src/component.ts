@@ -50,9 +50,14 @@ export class Component implements IComponent {
         if (body) {
             this.response.status(code);
             if (typeof body === 'string') {
-                this.response.send(body);
+                this.response.json({
+                    code,
+                    message: body,
+                });
             } else {
-                this.response.json(body);
+                this.response.json(Object.assign({
+                    code,
+                }, body));
             }
         } else {
             this.response.sendStatus(code);
