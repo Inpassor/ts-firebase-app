@@ -333,7 +333,7 @@ export interface IComponent extends ComponentOptions {
 
     /* static */
     getCodeFromError: (error: any) => number;
-    getBodyFromError: (error: any) => any;
+    getMessageFromError: (error: any) => any;
 
     [key: string]: any;
 }

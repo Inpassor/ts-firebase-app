@@ -46,7 +46,7 @@ export class Component implements IComponent {
 
     public sendError(error: any): void {
         const code = Component.getCodeFromError(error);
-        const body = Component.getBodyFromError(error);
+        const body = Component.getMessageFromError(error);
         if (body) {
             this.response.status(code);
             if (typeof body === 'string') {
@@ -75,9 +75,9 @@ export class Component implements IComponent {
         return <number>e.code || defaultCode;
     }
 
-    public getBodyFromError;
+    public getMessageFromError;
 
-    public static getBodyFromError(error: any): any {
+    public static getMessageFromError(error: any): any {
         if (typeof error === 'string') {
             return error;
         }
@@ -85,7 +85,7 @@ export class Component implements IComponent {
         if (e.code) {
             delete e.code;
         }
-        return e.message || Object.keys(e).length ? e : null;
+        return e.message || Object.keys(e).length ? e : 'An unexpected error occurred';
     }
 
 }
