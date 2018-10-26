@@ -10,6 +10,7 @@ import * as ejs from 'ejs';
 import * as sanitizer from 'express-sanitizer';
 
 import {
+    AuthType,
     Express,
     ExpressRequest,
     ExpressResponse,
@@ -148,8 +149,8 @@ export const expressApp = (config: AppConfig): Express => {
 
     if (config.routes) {
         app.use(<any>routes({
+            authType: config.authType || AuthType.none,
             routes: config.routes,
-            authType: config.authType,
         }));
     }
 
