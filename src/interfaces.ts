@@ -162,6 +162,7 @@ export interface ExpressRequest extends express.Request {
     };
     sessionID?: string;
     authType?: AuthType | number;
+    rawBody?: Buffer;
     sanitize?: (value: any) => any;
     models?: { [key: string]: typeof Model };
 }

@@ -6,9 +6,13 @@ import {
 export const sanitize = (request: ExpressRequest, response: ExpressResponse, next: () => void): void => {
     if (request.sanitize) {
         const sanitizeData = (source: string): void => {
-            for (const key in request[source]) {
-                if (request[source].hasOwnProperty(key) && typeof request[source][key] === 'string') {
-                    request[source][key] = request.sanitize(request[source][key]);
+            if (typeof request[source] === 'string') {
+                request[source] = request.sanitize(request[source]);
+            } else {
+                for (const key in request[source]) {
+                    if (request[source].hasOwnProperty(key) && typeof request[source][key] === 'string') {
+                        request[source][key] = request.sanitize(request[source][key]);
+                    }
                 }
             }
         };
