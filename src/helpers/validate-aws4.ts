@@ -10,7 +10,7 @@ export const validateAWS4 = (request: ExpressRequest): boolean => {
         return AWS4.validateAuthorizationHeader(
             authorizationHeader,
             AWS4.getAmzDate(request.headers),
-            request.rawBody,
+            request.rawBody.toString(),
             config.aws.appSync.accessKeyId,
             config.aws.appSync.region
         );

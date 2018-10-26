@@ -12,12 +12,9 @@ import * as sanitizer from 'express-sanitizer';
 import {
     AuthType,
     Express,
-    ExpressRequest,
-    ExpressResponse,
     AppConfig,
 } from './interfaces';
 import {
-    rawBodyGetter,
     sanitize,
     models,
     routes,
@@ -109,8 +106,6 @@ export const expressApp = (config: AppConfig): Express => {
     if (config.cookieParser && config.cookieParser.secret) {
         app.use(cookieParser(config.cookieParser.secret, config.cookieParser.options));
     }
-
-    app.use(rawBodyGetter());
 
     if (config.bodyParser) {
         if (config.bodyParser.raw) {
