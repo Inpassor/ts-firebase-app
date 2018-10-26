@@ -4,15 +4,6 @@ import {
     Data,
     ExpressRequest,
     ExpressResponse,
-    Firestore,
-    FirestoreCollectionReference,
-    FirestoreDocumentReference,
-    FirestoreDocumentSnapshot,
-    FirestoreQuerySnapshot,
-    FirestoreQueryDocumentSnapshot,
-    FirestoreFieldPath,
-    FirestoreTimestamp,
-    FirestoreWriteResult,
     FirestoreWhereFilterOp,
     IModel,
     ModelOptions,
@@ -29,26 +20,26 @@ export class Model implements IModel {
     public request: ExpressRequest = null;
     public static response: ExpressResponse = null;
     public response: ExpressResponse = null;
-    public static firestore: Firestore = null;
-    public firestore: Firestore = null;
+    public static firestore: admin.firestore.Firestore = null;
+    public firestore: admin.firestore.Firestore = null;
 
     public static collection = '';
     public collection = '';
     public static schema: ModelSchema = {};
     public schema: ModelSchema = {};
 
-    public collectionReference: FirestoreCollectionReference = null;
-    public documentReference: FirestoreDocumentReference = null;
+    public collectionReference: admin.firestore.CollectionReference = null;
+    public documentReference: admin.firestore.DocumentReference = null;
     public exists = true;
-    public createTime: FirestoreTimestamp = null;
-    public updateTime: FirestoreTimestamp = null;
-    public readTime: FirestoreTimestamp = null;
+    public createTime: admin.firestore.Timestamp = null;
+    public updateTime: admin.firestore.Timestamp = null;
+    public readTime: admin.firestore.Timestamp = null;
 
     private _idSchema: ModelFieldSchema = null;
     private _schema: { [key: string]: ModelFieldSchema } = {};
     private _fieldNames: string[] = null;
     private _data: Data = {};
-    private _writeResult: FirestoreWriteResult = null;
+    private _writeResult: admin.firestore.WriteResult = null;
 
     [key: string]: any;
 
@@ -194,7 +185,7 @@ export class Model implements IModel {
         return false;
     }
 
-    public update(values?: Data): Promise<FirestoreWriteResult> {
+    public update(values?: Data): Promise<admin.firestore.WriteResult> {
         return new Promise((resolve, reject) => {
             if (this.documentReference) {
                 if (!values || values && this.setValues(values)) {
@@ -210,7 +201,7 @@ export class Model implements IModel {
         });
     }
 
-    public setFromSnapshot(snapshot: FirestoreDocumentSnapshot | FirestoreQueryDocumentSnapshot): boolean {
+    public setFromSnapshot(snapshot: admin.firestore.DocumentSnapshot | admin.firestore.QueryDocumentSnapshot): boolean {
         this.exists = !!snapshot && !!snapshot.exists;
         if (
             this.exists
@@ -331,7 +322,7 @@ export class Model implements IModel {
                     if (model.collectionReference) {
                         model.documentReference = model.collectionReference.doc(id);
                         if (model.documentReference) {
-                            model.documentReference.get().then((snapshot: FirestoreDocumentSnapshot) => {
+                            model.documentReference.get().then((snapshot: admin.firestore.DocumentSnapshot) => {
                                 if (model.setFromSnapshot(snapshot)) {
                                     resolve(model);
                                 } else {
@@ -369,11 +360,11 @@ export class Model implements IModel {
                         model.collectionReference
                             .where(fieldName, opStr, value)
                             .limit(1)
-                            .get().then((querySnapshot: FirestoreQuerySnapshot) => {
+                            .get().then((querySnapshot: admin.firestore.QuerySnapshot) => {
                             if (querySnapshot) {
                                 if (querySnapshot.size) {
                                     let isFound = false;
-                                    querySnapshot.forEach((documentSnapshot: FirestoreQueryDocumentSnapshot) => {
+                                    querySnapshot.forEach((documentSnapshot: admin.firestore.QueryDocumentSnapshot) => {
                                         if (!isFound && model.setFromSnapshot(documentSnapshot)) {
                                             isFound = true;
                                             resolve(model);
@@ -413,11 +404,11 @@ export class Model implements IModel {
             if (this.firestore) {
                 const collectionReference = this.firestore.collection(this.collection);
                 if (collectionReference) {
-                    collectionReference.get().then((querySnapshot: FirestoreQuerySnapshot) => {
+                    collectionReference.get().then((querySnapshot: admin.firestore.QuerySnapshot) => {
                         if (querySnapshot) {
                             if (querySnapshot.size) {
                                 const promises: Promise<T>[] = [];
-                                querySnapshot.forEach((documentSnapshot: FirestoreQueryDocumentSnapshot) => {
+                                querySnapshot.forEach((documentSnapshot: admin.firestore.QueryDocumentSnapshot) => {
                                     if (documentSnapshot && documentSnapshot.exists) {
                                         promises.push(this._createAndRun((model: T, modelResolve, modelReject) => {
                                             if (model.setFromSnapshot(documentSnapshot)) {
@@ -459,8 +450,8 @@ export class Model implements IModel {
         });
     }
 
-    private _normalizeWriteResult(writeResult: any): FirestoreWriteResult {
-        const result: FirestoreWriteResult = writeResult;
+    private _normalizeWriteResult(writeResult: any): admin.firestore.WriteResult {
+        const result: admin.firestore.WriteResult = writeResult;
         this._writeResult = result;
         return result;
     }

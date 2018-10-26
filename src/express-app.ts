@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as express from 'express';
+import * as Sentry from '@sentry/node';
 import * as helmet from 'helmet';
 import * as session from 'express-session';
 import * as cors from 'cors';
@@ -23,6 +24,11 @@ export const expressApp = (config: AppConfig): Express => {
     const app = <Express>express();
     app.config = config;
     app.env = process.env.NODE_ENV;
+
+    if (config.sentry) {
+        Sentry.init(config.sentry);
+        app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+    }
 
     if (config.helmet) {
         app.use(helmet(config.helmet));
@@ -135,6 +141,10 @@ export const expressApp = (config: AppConfig): Express => {
         app.set('views', config.viewsPath);
         app.set('view engine', 'ejs');
         app.engine(config.viewsExtension || 'html', ejs.renderFile);
+    }
+
+    if (config.sentry) {
+        app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
     }
 
     return app;

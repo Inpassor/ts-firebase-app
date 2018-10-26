@@ -8,6 +8,6 @@ export declare class Component implements IComponent {
     sendError(error: any): void;
     getCodeFromError: any;
     static getCodeFromError(error: any): number;
-    getBodyFromError: any;
-    static getBodyFromError(error: any): any;
+    getMessageFromError: any;
+    static getMessageFromError(error: any): any;
 }

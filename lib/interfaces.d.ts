@@ -74,6 +74,9 @@ export interface AppConfig {
     models?: {
         [key: string]: typeof Model;
     };
+    sentry?: {
+        dsn: string;
+    };
     helmet?: {
         [key: string]: any;
     };
@@ -125,7 +128,7 @@ export interface AppConfig {
 export interface ExpressRequest extends express.Request {
     app: Express;
     firebaseApp: admin.app.App;
-    firestore: Firestore;
+    firestore: admin.firestore.Firestore;
     session?: {
         id: string;
         cookie: {
@@ -154,107 +157,14 @@ export interface Route {
     component: typeof Component;
     authType?: AuthType | number;
 }
-export interface Firestore extends admin.firestore.Firestore {
-}
-export declare class FirestoreTimestamp extends admin.firestore.Timestamp {
-}
-export interface FirestoreFieldPath extends admin.firestore.FieldPath {
-}
 export declare type FirestoreWhereFilterOp = '<' | '<=' | '==' | '>=' | '>' | 'array-contains';
-export declare type FirestoreOrderByDirection = 'desc' | 'asc';
-export declare type FirestoreDocumentChangeType = 'added' | 'removed' | 'modified';
-export interface FirestoreDocumentReference extends admin.firestore.DocumentReference {
-}
-export interface FirestoreDocumentSnapshot extends admin.firestore.DocumentSnapshot {
-    readonly exists: boolean;
-    readonly ref: FirestoreDocumentReference;
-    readonly id: string;
-    readonly createTime?: FirestoreTimestamp;
-    readonly updateTime?: FirestoreTimestamp;
-    readonly readTime: FirestoreTimestamp;
-    data: () => Data | undefined;
-    get: (fieldPath: string | FirestoreFieldPath) => any;
-    isEqual: (other: FirestoreDocumentSnapshot) => boolean;
-}
-export interface FirestoreDocumentChange {
-    readonly type: FirestoreDocumentChangeType;
-    readonly doc: FirestoreQueryDocumentSnapshot;
-    readonly oldIndex: number;
-    readonly newIndex: number;
-    isEqual: (other: FirestoreDocumentChange) => boolean;
-}
-export interface FirestoreQuery extends admin.firestore.Query {
-    readonly firestore: Firestore;
-    where: (fieldPath: string | FirestoreFieldPath, opStr: FirestoreWhereFilterOp, value: any) => FirestoreQuery;
-    orderBy: (fieldPath: string | FirestoreFieldPath, directionStr?: FirestoreOrderByDirection) => FirestoreQuery;
-    limit: (limit: number) => FirestoreQuery;
-    offset: (offset: number) => FirestoreQuery;
-    select: (...field: (string | FirestoreFieldPath)[]) => FirestoreQuery;
-    startAt: (snapshot: FirestoreDocumentSnapshot, ...fieldValues: any[]) => FirestoreQuery;
-    startAfter: (snapshot: FirestoreDocumentSnapshot, ...fieldValues: any[]) => FirestoreQuery;
-    endBefore: (snapshot: FirestoreDocumentSnapshot, ...fieldValues: any[]) => FirestoreQuery;
-    endAt: (snapshot: FirestoreDocumentSnapshot, ...fieldValues: any[]) => FirestoreQuery;
-    get: () => Promise<FirestoreQuerySnapshot>;
-    stream: () => NodeJS.ReadableStream;
-    onSnapshot: (onNext: (snapshot: FirestoreQuerySnapshot) => void, onError?: (error: Error) => void) => () => void;
-    isEqual: (other: FirestoreQuery) => boolean;
-}
-export interface FirestoreCollectionReference extends FirestoreQuery {
-    readonly id: string;
-    readonly parent: FirestoreDocumentReference | null;
-    readonly path: string;
-    doc: (documentPath?: string) => FirestoreDocumentReference;
-    add: (data: Data) => Promise<FirestoreDocumentReference>;
-    isEqual: (other: FirestoreCollectionReference) => boolean;
-}
-export interface FirestoreQuerySnapshot extends admin.firestore.QuerySnapshot {
-    readonly query: FirestoreQuery;
-    readonly docChanges: FirestoreDocumentChange[];
-    readonly docs: FirestoreQueryDocumentSnapshot[];
-    readonly size: number;
-    readonly empty: boolean;
-    readonly readTime: FirestoreTimestamp;
-    forEach: (callback: (result: FirestoreQueryDocumentSnapshot) => void, thisArg?: any) => void;
-    isEqual: (other: FirestoreQuerySnapshot) => boolean;
-}
-export interface FirestoreQueryDocumentSnapshot extends FirestoreDocumentSnapshot {
-    readonly createTime: FirestoreTimestamp;
-    readonly updateTime: FirestoreTimestamp;
-    data: () => Data;
-}
-export interface FirestoreSetOptions {
-    readonly merge?: boolean;
-    readonly mergeFields?: (string | FirestoreFieldPath)[];
-}
-export interface FirestorePrecondition {
-    readonly lastUpdateTime?: FirestoreTimestamp;
-}
-export interface FirestoreTransaction {
-    get: (queryOrDocumentRef: FirestoreQuery | FirestoreDocumentReference) => Promise<FirestoreQuerySnapshot | FirestoreDocumentSnapshot>;
-    getAll: (...documentRef: FirestoreDocumentReference[]) => Promise<FirestoreQuerySnapshot[]>;
-    create: (documentRef: FirestoreDocumentReference, data: Data) => FirestoreTransaction;
-    set: (documentRef: FirestoreDocumentReference, data: Data, options?: FirestoreSetOptions) => FirestoreTransaction;
-    update: (documentRef: FirestoreDocumentReference, dataOrField: string | FirestoreFieldPath | Data, preconditionOrValue?: FirestorePrecondition | any, ...fieldsOrPrecondition: any[]) => FirestoreTransaction;
-    delete: (documentRef: FirestoreDocumentReference, precondition?: FirestorePrecondition) => FirestoreTransaction;
-}
-export declare class FirestoreWriteResult {
-    readonly writeTime: FirestoreTimestamp;
-    isEqual: (other: FirestoreWriteResult) => boolean;
-}
-export interface FirestoreWriteBatch {
-    create: (documentRef: FirestoreDocumentReference, data: Data) => FirestoreWriteBatch;
-    set: (documentRef: FirestoreDocumentReference, data: Data, options?: FirestoreSetOptions) => FirestoreWriteBatch;
-    update: (documentRef: FirestoreDocumentReference, dataOrField: string | FirestoreFieldPath | Data, preconditionOrValue?: FirestorePrecondition | any, ...fieldsOrPrecondition: any[]) => FirestoreWriteBatch;
-    delete: (documentRef: FirestoreDocumentReference, precondition?: FirestorePrecondition) => FirestoreWriteBatch;
-    commit: () => Promise<FirestoreWriteResult[]>;
-}
 export interface ComponentAction {
     (next?: () => void): void;
 }
 export interface ComponentOptions {
     request: ExpressRequest;
     response: ExpressResponse;
-    firestore?: Firestore;
+    firestore?: admin.firestore.Firestore;
 }
 export interface IComponent extends ComponentOptions {
     get?: ComponentAction;
@@ -287,7 +197,7 @@ export interface IComponent extends ComponentOptions {
     init: (options: ComponentOptions) => void;
     sendError: (error: any) => void;
     getCodeFromError: (error: any) => number;
-    getBodyFromError: (error: any) => any;
+    getMessageFromError: (error: any) => any;
     [key: string]: any;
 }
 export interface ModelSchema {
@@ -316,19 +226,19 @@ export interface ModelFieldSchema {
 export interface ModelOptions {
     request: ExpressRequest;
     response: ExpressResponse;
-    firestore: Firestore;
+    firestore: admin.firestore.Firestore;
     collection: string;
     schema: ModelSchema;
     modelName?: string;
 }
 export interface IModel extends ModelOptions {
     fieldNames: string[];
-    collectionReference: FirestoreCollectionReference;
-    documentReference: FirestoreDocumentReference;
+    collectionReference: admin.firestore.CollectionReference;
+    documentReference: admin.firestore.DocumentReference;
     exists: boolean;
-    createTime: FirestoreTimestamp;
-    updateTime: FirestoreTimestamp;
-    readTime: FirestoreTimestamp;
+    createTime: admin.firestore.Timestamp;
+    updateTime: admin.firestore.Timestamp;
+    readTime: admin.firestore.Timestamp;
     init: (options: ModelOptions) => void;
     set: (target: Model, key: string, value: any) => boolean;
     setValue: (fieldName: string, value: any) => boolean;
@@ -340,8 +250,8 @@ export interface IModel extends ModelOptions {
     setId: (id: string) => boolean;
     getId: () => string;
     removeField: (fieldName: string) => boolean;
-    update: (values?: Data) => Promise<FirestoreWriteResult>;
-    setFromSnapshot: (snapshot: FirestoreDocumentSnapshot) => boolean;
+    update: (values?: Data) => Promise<admin.firestore.WriteResult>;
+    setFromSnapshot: (snapshot: admin.firestore.DocumentSnapshot) => boolean;
     collectionReferenceError: (reject: (reason?: any) => void) => void;
     create: <T extends Model>(modelName_or_id?: string, id?: string) => Promise<T>;
     add: <T extends Model>(id: string, values: Data) => Promise<T>;

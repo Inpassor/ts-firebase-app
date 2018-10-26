@@ -1,10 +1,7 @@
 import * as session from 'express-session';
 import * as admin from 'firebase-admin';
 
-import {
-    Data,
-    FirestoreCollectionReference,
-} from '../interfaces';
+import {Data} from '../interfaces';
 
 export interface FirestoreStoreParser {
     read: (data: Data) => Data;
@@ -19,7 +16,7 @@ export interface FirestoreStoreOptions {
 
 export class FirestoreStore extends session.Store {
 
-    private _collectionReference: FirestoreCollectionReference = null;
+    private _collectionReference: admin.firestore.CollectionReference = null;
     private _parser: FirestoreStoreParser = null;
 
     constructor(options: FirestoreStoreOptions) {

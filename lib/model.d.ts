@@ -1,4 +1,5 @@
-import { Data, ExpressRequest, ExpressResponse, Firestore, FirestoreCollectionReference, FirestoreDocumentReference, FirestoreDocumentSnapshot, FirestoreQueryDocumentSnapshot, FirestoreTimestamp, FirestoreWriteResult, FirestoreWhereFilterOp, IModel, ModelOptions, ModelSchema } from './interfaces';
+import * as admin from 'firebase-admin';
+import { Data, ExpressRequest, ExpressResponse, FirestoreWhereFilterOp, IModel, ModelOptions, ModelSchema } from './interfaces';
 export declare class Model implements IModel {
     static modelName: string;
     modelName: string;
@@ -6,18 +7,18 @@ export declare class Model implements IModel {
     request: ExpressRequest;
     static response: ExpressResponse;
     response: ExpressResponse;
-    static firestore: Firestore;
-    firestore: Firestore;
+    static firestore: admin.firestore.Firestore;
+    firestore: admin.firestore.Firestore;
     static collection: string;
     collection: string;
     static schema: ModelSchema;
     schema: ModelSchema;
-    collectionReference: FirestoreCollectionReference;
-    documentReference: FirestoreDocumentReference;
+    collectionReference: admin.firestore.CollectionReference;
+    documentReference: admin.firestore.DocumentReference;
     exists: boolean;
-    createTime: FirestoreTimestamp;
-    updateTime: FirestoreTimestamp;
-    readTime: FirestoreTimestamp;
+    createTime: admin.firestore.Timestamp;
+    updateTime: admin.firestore.Timestamp;
+    readTime: admin.firestore.Timestamp;
     private _idSchema;
     private _schema;
     private _fieldNames;
@@ -37,8 +38,8 @@ export declare class Model implements IModel {
     setId(id: string): boolean;
     getId(): string;
     removeField(fieldName: string): boolean;
-    update(values?: Data): Promise<FirestoreWriteResult>;
-    setFromSnapshot(snapshot: FirestoreDocumentSnapshot | FirestoreQueryDocumentSnapshot): boolean;
+    update(values?: Data): Promise<admin.firestore.WriteResult>;
+    setFromSnapshot(snapshot: admin.firestore.DocumentSnapshot | admin.firestore.QueryDocumentSnapshot): boolean;
     collectionReferenceError(reject: (reason?: any) => void): void;
     static collectionReferenceError(reject: (reason?: any) => void): void;
     create: any;
