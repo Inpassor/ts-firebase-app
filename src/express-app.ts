@@ -11,7 +11,10 @@ import * as sanitizer from 'express-sanitizer';
 
 import {
     Express,
+    ExpressRequest,
+    ExpressResponse,
     AppConfig,
+    BodyParserBasicOptions,
 } from './interfaces';
 import {
     sanitize,
@@ -107,17 +110,30 @@ export const expressApp = (config: AppConfig): Express => {
     }
 
     if (config.bodyParser) {
+        const injectRawBodySaver = (parserOptions: BodyParserBasicOptions): BodyParserBasicOptions => {
+            const result: BodyParserBasicOptions = Object.assign({}, parserOptions);
+            result.verify = (request: ExpressRequest, response: ExpressResponse, buffer: Buffer, encoding: string): void => {
+                if (buffer && buffer.length) {
+                    request.rawBody = buffer.toString(encoding);
+                }
+                if (parserOptions.verify) {
+                    parserOptions.verify(request, response, buffer, encoding);
+                }
+            };
+            return result;
+        };
+
         if (config.bodyParser.raw) {
-            app.use(bodyParser.raw(config.bodyParser.raw));
+            app.use(bodyParser.raw(injectRawBodySaver(config.bodyParser.raw)));
         }
         if (config.bodyParser.json) {
-            app.use(bodyParser.json(config.bodyParser.json));
+            app.use(bodyParser.json(injectRawBodySaver(config.bodyParser.json)));
         }
         if (config.bodyParser.text) {
-            app.use(bodyParser.text(config.bodyParser.text));
+            app.use(bodyParser.text(injectRawBodySaver(config.bodyParser.text)));
         }
         if (config.bodyParser.urlencoded) {
-            app.use(bodyParser.urlencoded(config.bodyParser.urlencoded));
+            app.use(bodyParser.urlencoded(injectRawBodySaver(config.bodyParser.urlencoded)));
         }
     }
 

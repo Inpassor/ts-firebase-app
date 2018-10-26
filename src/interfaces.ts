@@ -30,7 +30,7 @@ export interface BodyParserBasicOptions {
     inflate?: boolean; // Defaults to true
     limit?: number | string; // Defaults to '100kb'
     type?: string | string[] | ((request: express.Request) => boolean); // Defaults to application/json
-    verify?: (request: express.Request, response: express.Response, buffer: Buffer, encoding: string) => void; // Defaults to undefined
+    verify?: (request: ExpressRequest, response: ExpressResponse, buffer: Buffer, encoding: string) => void; // Defaults to undefined
 }
 
 export interface BodyParserJsonOptions extends BodyParserBasicOptions {
@@ -162,7 +162,7 @@ export interface ExpressRequest extends express.Request {
     };
     sessionID?: string;
     authType?: AuthType | number;
-    rawBody?: Buffer;
+    rawBody?: string;
     sanitize?: (value: any) => any;
     models?: { [key: string]: typeof Model };
 }
