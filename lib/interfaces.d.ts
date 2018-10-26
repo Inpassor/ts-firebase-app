@@ -25,7 +25,7 @@ export interface BodyParserBasicOptions {
     inflate?: boolean;
     limit?: number | string;
     type?: string | string[] | ((request: express.Request) => boolean);
-    verify?: (request: express.Request, response: express.Response, buffer: Buffer, encoding: string) => void;
+    verify?: (request: ExpressRequest, response: ExpressResponse, buffer: Buffer, encoding: string) => void;
 }
 export interface BodyParserJsonOptions extends BodyParserBasicOptions {
     reviver?: (key: string, value: any) => any;
@@ -145,6 +145,7 @@ export interface ExpressRequest extends express.Request {
     };
     sessionID?: string;
     authType?: AuthType | number;
+    rawBody?: string;
     sanitize?: (value: any) => any;
     models?: {
         [key: string]: typeof Model;
