@@ -138,6 +138,7 @@ export interface AppConfig {
             accessKeyId: string;
             region: string;
             authHeaderName?: string;
+            authDateHeaderName?: string;
             validateBody?: boolean;
         },
     };

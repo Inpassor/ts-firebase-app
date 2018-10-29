@@ -9,7 +9,7 @@ export const validateAWS4 = (request: ExpressRequest): boolean => {
             : request.headers.authorization || '';
         return AWS4.validateAuthorizationHeader(
             authorizationHeader,
-            AWS4.getAmzDate(request.headers),
+            <string>(request.headers[config.aws.appSync.authDateHeaderName || 'x-amz-date'] || ''),
             (config.aws.appSync.validateBody === undefined || config.aws.appSync.validateBody) ?
                 request.rawBody.toString()
                 : '',
