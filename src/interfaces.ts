@@ -133,6 +133,9 @@ export interface AppConfig {
         urlencoded?: BodyParserUrlencodedOptions;
     };
     sanitizer?: {};
+    bearer?: {
+        token: string;
+    },
     aws?: {
         appSync?: {
             accessKeyId: string;
