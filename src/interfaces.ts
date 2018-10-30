@@ -88,6 +88,7 @@ export type CorsOptionsDelegate = (
 
 export interface AppConfig {
     authType?: AuthType | number;
+    validateHeaders?: (request: ExpressRequest) => boolean;
     routes?: Route[];
     viewsPath?: string;
     viewsExtension?: string;
@@ -135,6 +136,7 @@ export interface AppConfig {
     sanitizer?: {};
     bearer?: {
         token: string;
+        authHeaderName?: string;
     },
     aws?: {
         appSync?: {

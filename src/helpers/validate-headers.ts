@@ -17,5 +17,11 @@ export const validateHeaders = (request: ExpressRequest): boolean => {
                 break;
         }
     }
+    if (result) {
+        const config = request.app.config;
+        if (config && config.validateHeaders) {
+            return config.validateHeaders(request);
+        }
+    }
     return result;
 };
