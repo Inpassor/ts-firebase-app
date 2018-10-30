@@ -133,8 +133,9 @@ export const expressApp = (config: AppConfig): Express => {
 
     if (config.routes) {
         app.use(<any>routes({
-            authType: config.authType || AuthType.none,
             routes: config.routes,
+            authType: config.authType || AuthType.none,
+            validateHeaders: config.validateHeaders || false,
         }));
     }
 

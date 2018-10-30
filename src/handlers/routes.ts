@@ -40,6 +40,7 @@ const methods = [
 export const routes = (options: {
     routes: Route[],
     authType?: AuthType | number,
+    validateHeaders?: false | ((request: ExpressRequest) => boolean),
 }) => {
     return (request: ExpressRequest, response: ExpressResponse, next: () => void): void => {
         const _routes = options.routes || [];
@@ -56,6 +57,7 @@ export const routes = (options: {
                 if (request.app[method] && action) {
                     request.app[method](route.path, (_request: ExpressRequest, _response: ExpressResponse, _next: () => void): void => {
                         _request.authType = route.authType === undefined ? options.authType : route.authType;
+                        _request.validateHeaders = route.validateHeaders === undefined ? options.validateHeaders : route.validateHeaders;
                         if (validateHeaders(_request)) {
                             component.init({
                                 request: _request,
