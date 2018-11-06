@@ -144,7 +144,7 @@ export class Model implements IModel {
             for (const fieldName of this.fieldNames) {
                 if (fieldName !== idKey) {
                     const value = this.getValue(fieldName);
-                    if (value !== undefined) {
+                    if (value !== undefined && value !== null) {
                         data[fieldName] = value;
                     }
                 }
