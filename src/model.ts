@@ -82,12 +82,14 @@ export class Model implements IModel {
 
     public setValue(fieldName: string, value: any): boolean {
         const schema = this._schema[fieldName];
-        if (schema && (!schema.validate || schema.validate(value))) {
-            if (schema.set && !schema.set(value)) {
-                return false;
+        if (schema) {
+            if (!schema.validate || schema.validate(value)) {
+                if (schema.set && !schema.set(value)) {
+                    return false;
+                }
+                this._data[fieldName] = value;
+                return true;
             }
-            this._data[fieldName] = value;
-            return true;
         }
         return false;
     }
@@ -120,7 +122,10 @@ export class Model implements IModel {
     public getValue(fieldName: string): any {
         const schema = this._schema[fieldName];
         if (schema) {
-            return schema.get ? schema.get() : this._data[fieldName] || undefined;
+            if (schema.get) {
+                return schema.get();
+            }
+            return this._data.hasOwnProperty(fieldName) && this._data[fieldName] || undefined;
         }
         return undefined;
     }
@@ -353,7 +358,7 @@ export class Model implements IModel {
             const _fieldName = fieldName.split('.')[0];
             const schema = _fieldName && model._schema && model._schema[_fieldName];
             if (schema) {
-                if (value && !schema.validate || schema.validate(value)) {
+                if (!schema.validate || schema.validate(value)) {
                     if (model.collectionReference) {
                         model.collectionReference
                             .where(fieldName, opStr, value)
