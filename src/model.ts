@@ -83,7 +83,7 @@ export class Model implements IModel {
     public setValue(fieldName: string, value: any): boolean {
         if (value) {
             const schema = this._schema[fieldName];
-            if (schema && (!schema.validate || schema.validate && schema.validate(value))) {
+            if (schema && (!schema.validate || schema.validate(value))) {
                 if (schema.set && !schema.set(value)) {
                     return false;
                 }
@@ -188,7 +188,7 @@ export class Model implements IModel {
     public update(values?: Data): Promise<admin.firestore.WriteResult> {
         return new Promise((resolve, reject) => {
             if (this.documentReference) {
-                if (!values || values && this.setValues(values)) {
+                if (!values || this.setValues(values)) {
                     this.documentReference.update(this.getValuesForUpdate()).then((writeResult) => {
                         resolve(this._normalizeWriteResult(writeResult));
                     }, (error: any) => reject(error));
@@ -273,11 +273,11 @@ export class Model implements IModel {
     public static add<T extends Model>(id: string, values: Data): Promise<T> {
         return this._createAndRun((model: T, resolve, reject) => {
             if (model._idSchema) {
-                if (!model._idSchema.validate || model._idSchema.validate && model._idSchema.validate(id)) {
+                if (!model._idSchema.validate || model._idSchema.validate(id)) {
                     if (model.collectionReference) {
                         model.documentReference = model.collectionReference.doc(id);
                         if (model.documentReference) {
-                            if (!values || values && model.setValues(values)) {
+                            if (!values || model.setValues(values)) {
                                 model.documentReference.set(model.getValuesForUpdate()).then(() => {
                                     resolve(model);
                                 }, (error: any) => reject(error));
@@ -318,7 +318,7 @@ export class Model implements IModel {
     public static findById<T extends Model>(id: string): Promise<T> {
         return this._createAndRun((model: T, resolve, reject) => {
             if (model._idSchema) {
-                if (!model._idSchema.validate || model._idSchema.validate && model._idSchema.validate(id)) {
+                if (!model._idSchema.validate || model._idSchema.validate(id)) {
                     if (model.collectionReference) {
                         model.documentReference = model.collectionReference.doc(id);
                         if (model.documentReference) {
@@ -355,7 +355,7 @@ export class Model implements IModel {
             const _fieldName = fieldName.split('.')[0];
             const schema = _fieldName && model._schema && model._schema[_fieldName];
             if (schema) {
-                if (value && !schema.validate || schema.validate && schema.validate(value)) {
+                if (value && !schema.validate || schema.validate(value)) {
                     if (model.collectionReference) {
                         model.collectionReference
                             .where(fieldName, opStr, value)
