@@ -81,15 +81,13 @@ export class Model implements IModel {
     }
 
     public setValue(fieldName: string, value: any): boolean {
-        if (value) {
-            const schema = this._schema[fieldName];
-            if (schema && (!schema.validate || schema.validate(value))) {
-                if (schema.set && !schema.set(value)) {
-                    return false;
-                }
-                this._data[fieldName] = value;
-                return true;
+        const schema = this._schema[fieldName];
+        if (schema && (!schema.validate || schema.validate(value))) {
+            if (schema.set && !schema.set(value)) {
+                return false;
             }
+            this._data[fieldName] = value;
+            return true;
         }
         return false;
     }
