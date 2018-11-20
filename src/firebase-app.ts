@@ -4,11 +4,14 @@ import {expressApp} from './express-app';
 import {AppConfig} from './interfaces';
 
 export const firebaseApp = (getConfig: AppConfig | Promise<AppConfig>): functions.HttpsFunction => {
-    return functions.https.onRequest(() => {
-        Promise.resolve(getConfig).then((config: AppConfig): void => {
-            expressApp(config);
-        }, (error: any) => {
-            console.error(error);
+    return functions.https.onRequest((request, response) => {
+        return new Promise((resolve, reject) => {
+            Promise.resolve(getConfig).then((config: AppConfig): void => {
+                const app = expressApp(config);
+                resolve(app(request, response));
+            }, (error: any) => {
+                reject(error);
+            });
         });
     });
 };
