@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import * as admin from 'firebase-admin';
 import * as express from 'express';
 import { Component } from './component';
