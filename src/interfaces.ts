@@ -67,7 +67,7 @@ export interface AppConfigFirebase {
 
 export type CustomOrigin = (
     requestOrigin: string,
-    callback: (err: Error | null, allow?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void,
 ) => void;
 
 export interface CorsOptions {
@@ -83,7 +83,7 @@ export interface CorsOptions {
 
 export type CorsOptionsDelegate = (
     req: express.Request,
-    callback: (err: Error | null, options?: CorsOptions) => void
+    callback: (err: Error | null, options?: CorsOptions) => void,
 ) => void;
 
 export interface AppConfig {
@@ -147,6 +147,8 @@ export interface AppConfig {
             validateBody?: boolean;
         },
     };
+
+    [key: string]: any;
 }
 
 export interface ExpressRequest extends express.Request {
