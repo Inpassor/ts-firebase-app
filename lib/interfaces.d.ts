@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import * as admin from 'firebase-admin';
 import * as express from 'express';
 import { Component } from './component';
@@ -130,6 +131,7 @@ export interface AppConfig {
             validateBody?: boolean;
         };
     };
+    [key: string]: any;
 }
 export interface ExpressRequest extends express.Request {
     app: Express;
