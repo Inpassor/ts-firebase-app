@@ -36,7 +36,7 @@
         "cors": "^2.8.5",
         "ejs": "^2.6.1",
         "express": "^4.16.4",
-        "express-sanitizer": "^1.0.4",
+        "express-sanitizer": "^1.0.5",
         "express-session": "^1.15.6",
         "firebase-admin": "^7.0.0",
         "firebase-functions": "^2.2.0",
@@ -45,9 +45,9 @@
     "devDependencies": {
         "@firebase/app-types": "^0.3.3",
         "@types/express": "^4.16.1",
-        "@types/node": "^10.12.21",
+        "@types/node": "^10.12.24",
         "rimraf": "^2.6.3",
         "tslint": "^5.12.1",
-        "typescript": "^3.3.1"
+        "typescript": "^3.3.3"
     }
 }
