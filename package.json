@@ -24,8 +24,8 @@
     ],
     "main": "lib/index.js",
     "scripts": {
-        "clean": "rimraf ./lib",
         "lint": "tslint --project tsconfig.json",
+        "clean": "rimraf ./lib",
         "build": "npm run lint && npm run clean && tsc"
     },
     "dependencies": {

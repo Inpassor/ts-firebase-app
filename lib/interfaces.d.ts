@@ -97,7 +97,7 @@ export interface AppConfig {
             sameSite?: boolean | 'lax' | 'strict';
             secure?: boolean;
         };
-        genid?: (request: express.Request) => string;
+        genid?: (request: ExpressRequest) => string;
         proxy?: boolean;
         rolling?: boolean;
         firestoreCollection?: string;
