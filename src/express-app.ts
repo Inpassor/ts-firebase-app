@@ -73,7 +73,7 @@ export const expressApp = (config: AppConfig): Express => {
             appOptions.storageBucket = config.firebase.storageBucket;
         }
         if (!app.locals.firebaseApp) {
-            app.locals.firebaseApp = admin.initializeApp(appOptions) || null;
+            app.locals.firebaseApp = admin.initializeApp(appOptions, appOptions.projectId) || null;
         }
         if (!app.locals.firestore) {
             app.locals.firestore = app.locals.firebaseApp && app.locals.firebaseApp.firestore() || null;
