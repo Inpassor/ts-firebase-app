@@ -73,15 +73,14 @@ export const expressApp = (config: AppConfig): Express => {
             appOptions.storageBucket = config.firebase.storageBucket;
         }
         if (!app.locals.firebaseApp) {
-            app.locals.firebaseApp = admin.apps.length ? admin.app() : admin.initializeApp(appOptions);
-        }
-        if (!app.locals.firestore) {
-            app.locals.firestore = app.locals.firebaseApp && app.locals.firebaseApp.firestore() || null;
-            if (app.locals.firestore) {
-                try {
+            if (!admin.apps.length) {
+                app.locals.firebaseApp = admin.initializeApp(appOptions);
+                app.locals.firestore = app.locals.firebaseApp.firestore() || null;
+                if (app.locals.firestore) {
                     app.locals.firestore.settings(firestoreOptions);
-                } catch (e) {
                 }
+            } else {
+                app.locals.firebaseApp = admin.app();
             }
         }
     }
