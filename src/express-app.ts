@@ -78,7 +78,10 @@ export const expressApp = (config: AppConfig): Express => {
         if (!app.locals.firestore) {
             app.locals.firestore = app.locals.firebaseApp && app.locals.firebaseApp.firestore() || null;
             if (app.locals.firestore) {
-                app.locals.firestore.settings(firestoreOptions);
+                try {
+                    app.locals.firestore.settings(firestoreOptions);
+                } catch (e) {
+                }
             }
         }
     }
