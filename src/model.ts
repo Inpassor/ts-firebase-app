@@ -159,9 +159,6 @@ export class Model implements IModel {
     public setId(id: string): boolean {
         const idKey = this._idSchema && this._idSchema.key;
         if (idKey) {
-            const prevId = this.getValue(idKey);
-            console.log(prevId);
-            console.log(id);
             return this.setValue(idKey, id);
         }
         return false;
@@ -281,6 +278,7 @@ export class Model implements IModel {
                         model.documentReference = model.collectionReference.doc(id);
                         if (model.documentReference) {
                             if (!values || model.setValues(values)) {
+                                model.setId(id);
                                 model.documentReference.set(model.getValuesForUpdate()).then(() => {
                                     resolve(model);
                                 }, (error: any) => reject(error));
