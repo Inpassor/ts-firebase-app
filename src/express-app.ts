@@ -81,6 +81,7 @@ export const expressApp = (config: AppConfig): Express => {
                 }
             } else {
                 app.locals.firebaseApp = admin.app();
+                app.locals.firestore = admin.firestore(app.locals.firebaseApp);
             }
         }
     }
