@@ -135,8 +135,6 @@ export interface AppConfig {
 }
 export interface ExpressRequest extends express.Request {
     app: Express;
-    firebaseApp: admin.app.App;
-    firestore: admin.firestore.Firestore;
     session?: {
         id: string;
         cookie: {
@@ -175,6 +173,7 @@ export interface ComponentAction {
 export interface ComponentOptions {
     request: ExpressRequest;
     response: ExpressResponse;
+    firebaseApp?: admin.app.App;
     firestore?: admin.firestore.Firestore;
 }
 export interface IComponent extends ComponentOptions {

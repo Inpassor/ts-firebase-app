@@ -49,6 +49,7 @@ export const routes = (options: {
             const component = new route.component({
                 request,
                 response,
+                firebaseApp: request.app.locals.firebaseApp,
                 firestore: request.app.locals.firestore,
             });
             for (let j = 0, k = methods.length; j < k; j++) {

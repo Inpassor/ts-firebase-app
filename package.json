@@ -1,6 +1,6 @@
 {
     "name": "@inpassor/firebase-app",
-    "version": "0.3.24",
+    "version": "0.3.25",
     "license": "MIT",
     "author": "Oleg V. Kuzmin",
     "description": "Firebase Express application",
