@@ -31,13 +31,14 @@ export declare class Model implements IModel {
     set(target: Model, key: string, value: any): boolean;
     setValue(fieldName: string, value: any): boolean;
     setValues(values: Data): boolean;
+    deleteField(fieldName: string): boolean;
+    deleteFields(fieldNames: string[]): boolean;
     get(target: Model, key: string): any;
     getValue(fieldName: string): any;
     getValues(fieldNames?: string[]): Data;
     getValuesForUpdate(): Data;
     setId(id: string): boolean;
     getId(): string;
-    removeField(fieldName: string): boolean;
     update(values?: Data): Promise<admin.firestore.WriteResult>;
     setFromSnapshot(snapshot: admin.firestore.DocumentSnapshot | admin.firestore.QueryDocumentSnapshot): boolean;
     collectionReferenceError(reject: (reason?: any) => void): void;

@@ -108,6 +108,24 @@ export class Model implements IModel {
         return false;
     }
 
+    public deleteField(fieldName: string): boolean {
+        const schema = this._schema[fieldName];
+        if (schema) {
+            this._data[fieldName] = admin.firestore.FieldValue.delete();
+            return true;
+        }
+        return false;
+    }
+
+    public deleteFields(fieldNames: string[]): boolean {
+        for (const fieldName of fieldNames) {
+            if (!this.deleteField(fieldName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public get(target: Model, key: string): any {
         if (target[key] !== undefined) {
             return target[key];
@@ -125,7 +143,7 @@ export class Model implements IModel {
             if (schema.get) {
                 return schema.get();
             }
-            return this._data.hasOwnProperty(fieldName) && this._data[fieldName] || undefined;
+            return this._data.hasOwnProperty(fieldName) ? this._data[fieldName] : undefined;
         }
         return undefined;
     }
@@ -134,7 +152,7 @@ export class Model implements IModel {
         const data: Data = {};
         const _fieldNames = fieldNames && fieldNames.length ? fieldNames : this.fieldNames;
         for (const fieldName of _fieldNames) {
-            data[fieldName] = this.getValue(fieldName) || null;
+            data[fieldName] = this.getValue(fieldName);
         }
         return data;
     }
@@ -147,7 +165,7 @@ export class Model implements IModel {
             for (const fieldName of this.fieldNames) {
                 if (fieldName !== idKey) {
                     const value = this.getValue(fieldName);
-                    if (value !== undefined && value !== null) {
+                    if (value !== undefined) {
                         data[fieldName] = value;
                     }
                 }
@@ -174,15 +192,6 @@ export class Model implements IModel {
         } else {
             throw new Error(`The Schema of the model "${this.modelName}" has no field of the type ID`);
         }
-    }
-
-    public removeField(fieldName: string): boolean {
-        const schema = this._schema[fieldName];
-        if (schema) {
-            this._data[fieldName] = admin.firestore.FieldValue.delete();
-            return true;
-        }
-        return false;
     }
 
     public update(values?: Data): Promise<admin.firestore.WriteResult> {
