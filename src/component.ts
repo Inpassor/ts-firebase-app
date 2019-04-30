@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin';
 import {
     IComponent,
     ComponentOptions,
@@ -9,6 +10,8 @@ export class Component implements IComponent {
 
     public request: ExpressRequest = null;
     public response: ExpressResponse = null;
+    public firebaseApp: admin.app.App = null;
+    public firestore: admin.firestore.Firestore = null;
 
     constructor(options: ComponentOptions) {
         this.init(options);
