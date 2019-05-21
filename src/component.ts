@@ -90,8 +90,8 @@ export class Component implements IComponent {
         if (e) {
             if (e.message) {
                 message = e.message;
-            } else if (e.code) {
-                const code = Number(e.code);
+            } else {
+                const code = Number(e.code || e);
                 if (httpStatusList.hasOwnProperty(code)) {
                     message = httpStatusList[code];
                 }
