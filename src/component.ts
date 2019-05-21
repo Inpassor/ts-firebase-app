@@ -5,6 +5,7 @@ import {
     ExpressRequest,
     ExpressResponse,
 } from './interfaces';
+import {httpStatusList} from './helpers';
 
 export class Component implements IComponent {
 
@@ -84,11 +85,19 @@ export class Component implements IComponent {
         if (typeof error === 'string') {
             return error;
         }
+        let message = 'An unexpected error occurred';
         const e = error.error || error;
-        if (e.code) {
-            delete e.code;
+        if (e) {
+            if (e.message) {
+                message = e.message;
+            } else if (e.code) {
+                const code = Number(e.code);
+                if (httpStatusList.hasOwnProperty(code)) {
+                    message = httpStatusList[code];
+                }
+            }
         }
-        return e.message || Object.keys(e).length ? e : 'An unexpected error occurred';
+        return message;
     }
 
 }
