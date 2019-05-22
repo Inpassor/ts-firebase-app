@@ -68,7 +68,7 @@ export interface CorsOptions {
 export declare type CorsOptionsDelegate = (req: express.Request, callback: (err: Error | null, options?: CorsOptions) => void) => void;
 export interface AppConfig {
     authType?: AuthType | number;
-    validateHeaders?: false | ((request: ExpressRequest) => boolean);
+    validateHeaders?: false | ((request: ExpressRequest, firebaseApp: admin.app.App, firestore: admin.firestore.Firestore) => boolean);
     routes?: Route[];
     viewsPath?: string;
     viewsExtension?: string;
@@ -151,7 +151,7 @@ export interface ExpressRequest extends express.Request {
     };
     sessionID?: string;
     authType?: AuthType | number;
-    validateHeaders?: false | ((request: ExpressRequest) => boolean);
+    validateHeaders?: false | ((request: ExpressRequest, firebaseApp: admin.app.App, firestore: admin.firestore.Firestore) => boolean);
     rawBody?: Buffer;
     sanitize?: (value: any) => any;
     models?: {
@@ -164,7 +164,7 @@ export interface Route {
     path: PathParams;
     component: typeof Component;
     authType?: AuthType | number;
-    validateHeaders?: false | ((request: ExpressRequest) => boolean);
+    validateHeaders?: false | ((request: ExpressRequest, firebaseApp: admin.app.App, firestore: admin.firestore.Firestore) => boolean);
 }
 export declare type FirestoreWhereFilterOp = '<' | '<=' | '==' | '>=' | '>' | 'array-contains';
 export interface ComponentAction {

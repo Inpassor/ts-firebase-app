@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin';
 import {
     AuthType,
     ExpressRequest,
@@ -5,7 +6,11 @@ import {
 import {validateBearer} from './validate-bearer';
 import {validateAWS4} from './validate-aws4';
 
-export const validateHeaders = (request: ExpressRequest): boolean => {
+export const validateHeaders = (
+    request: ExpressRequest,
+    firebaseApp: admin.app.App,
+    firestore: admin.firestore.Firestore,
+): boolean => {
     let result = !request.authType;
     if (request.authType) {
         switch (request.authType) {
@@ -18,7 +23,7 @@ export const validateHeaders = (request: ExpressRequest): boolean => {
         }
     }
     if (request.validateHeaders && result) {
-        return request.validateHeaders(request);
+        return request.validateHeaders(request, firebaseApp, firestore);
     }
     return result;
 };

@@ -6,6 +6,7 @@ import {
     ComponentAction,
 } from '../interfaces';
 import {validateHeaders} from '../helpers';
+import * as admin from 'firebase-admin';
 
 const methods = [
     'get',
@@ -40,7 +41,11 @@ const methods = [
 export const routes = (options: {
     routes: Route[],
     authType?: AuthType | number,
-    validateHeaders?: false | ((request: ExpressRequest) => boolean),
+    validateHeaders?: false | ((
+        request: ExpressRequest,
+        firebaseApp: admin.app.App,
+        firestore: admin.firestore.Firestore,
+    ) => boolean),
 }) => {
     return (request: ExpressRequest, response: ExpressResponse, next: () => void): void => {
         const _routes = options.routes || [];
@@ -56,10 +61,15 @@ export const routes = (options: {
                 const method = methods[j];
                 const action: ComponentAction = component[method];
                 if (request.app[method] && action) {
-                    request.app[method](route.path, (_request: ExpressRequest, _response: ExpressResponse, _next: () => void): void => {
+                    request.app[method](route.path, (
+                        _request: ExpressRequest,
+                        _response: ExpressResponse,
+                        _next: () => void,
+                    ): void => {
                         _request.authType = route.authType === undefined ? options.authType : route.authType;
-                        _request.validateHeaders = route.validateHeaders === undefined ? options.validateHeaders : route.validateHeaders;
-                        if (validateHeaders(_request)) {
+                        _request.validateHeaders = route.validateHeaders === undefined ?
+                            options.validateHeaders : route.validateHeaders;
+                        if (validateHeaders(_request, _request.app.locals.firebaseApp, _request.app.locals.firestore)) {
                             component.init({
                                 request: _request,
                                 response: _response,
