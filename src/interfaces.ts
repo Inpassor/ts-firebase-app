@@ -86,13 +86,17 @@ export type CorsOptionsDelegate = (
     callback: (err: Error | null, options?: CorsOptions) => void,
 ) => void;
 
-export interface AppConfig {
-    authType?: AuthType | number;
-    validateHeaders?: false | ((
+export interface ValidateHeadersFunction {
+    (
         request: ExpressRequest,
         firebaseApp: admin.app.App,
         firestore: admin.firestore.Firestore,
-    ) => boolean);
+    ): boolean | Promise<boolean>;
+}
+
+export interface AppConfig {
+    authType?: AuthType | number;
+    validateHeaders?: false | ValidateHeadersFunction;
     routes?: Route[];
     viewsPath?: string;
     viewsExtension?: string;
@@ -173,11 +177,7 @@ export interface ExpressRequest extends express.Request {
     };
     sessionID?: string;
     authType?: AuthType | number;
-    validateHeaders?: false | ((
-        request: ExpressRequest,
-        firebaseApp: admin.app.App,
-        firestore: admin.firestore.Firestore,
-    ) => boolean);
+    validateHeaders?: false | ValidateHeadersFunction;
     rawBody?: Buffer;
     sanitize?: (value: any) => any;
     models?: { [key: string]: typeof Model };
@@ -190,11 +190,7 @@ export interface Route {
     path: PathParams;
     component: typeof Component;
     authType?: AuthType | number;
-    validateHeaders?: false | ((
-        request: ExpressRequest,
-        firebaseApp: admin.app.App,
-        firestore: admin.firestore.Firestore,
-    ) => boolean);
+    validateHeaders?: false | ValidateHeadersFunction;
 }
 
 export type FirestoreWhereFilterOp = '<' | '<=' | '==' | '>=' | '>' | 'array-contains';

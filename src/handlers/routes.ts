@@ -4,9 +4,9 @@ import {
     Route,
     AuthType,
     ComponentAction,
+    ValidateHeadersFunction,
 } from '../interfaces';
 import {validateHeaders} from '../helpers';
-import * as admin from 'firebase-admin';
 
 const methods = [
     'get',
@@ -41,11 +41,7 @@ const methods = [
 export const routes = (options: {
     routes: Route[],
     authType?: AuthType | number,
-    validateHeaders?: false | ((
-        request: ExpressRequest,
-        firebaseApp: admin.app.App,
-        firestore: admin.firestore.Firestore,
-    ) => boolean),
+    validateHeaders?: false | ValidateHeadersFunction,
 }) => {
     return (request: ExpressRequest, response: ExpressResponse, next: () => void): void => {
         const _routes = options.routes || [];
@@ -69,17 +65,25 @@ export const routes = (options: {
                         _request.authType = route.authType === undefined ? options.authType : route.authType;
                         _request.validateHeaders = route.validateHeaders === undefined ?
                             options.validateHeaders : route.validateHeaders;
-                        if (validateHeaders(_request, _request.app.locals.firebaseApp, _request.app.locals.firestore)) {
-                            component.init({
-                                request: _request,
-                                response: _response,
+                        Promise.resolve(
+                            validateHeaders(_request, _request.app.locals.firebaseApp, _request.app.locals.firestore),
+                        )
+                            .then((isValid) => {
+                                if (isValid) {
+                                    component.init({
+                                        request: _request,
+                                        response: _response,
+                                    });
+                                    setTimeout(() => {
+                                        action.call(component, _next);
+                                    }, 0);
+                                } else {
+                                    _response.sendStatus(403);
+                                }
+                            })
+                            .catch((error: any) => {
+                                throw new Error(error);
                             });
-                            setTimeout(() => {
-                                action.call(component, _next);
-                            }, 0);
-                        } else {
-                            _response.sendStatus(403);
-                        }
                     });
                 }
             }

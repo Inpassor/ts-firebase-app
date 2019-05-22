@@ -66,9 +66,12 @@ export interface CorsOptions {
     optionsSuccessStatus?: number;
 }
 export declare type CorsOptionsDelegate = (req: express.Request, callback: (err: Error | null, options?: CorsOptions) => void) => void;
+export interface ValidateHeadersFunction {
+    (request: ExpressRequest, firebaseApp: admin.app.App, firestore: admin.firestore.Firestore): boolean | Promise<boolean>;
+}
 export interface AppConfig {
     authType?: AuthType | number;
-    validateHeaders?: false | ((request: ExpressRequest, firebaseApp: admin.app.App, firestore: admin.firestore.Firestore) => boolean);
+    validateHeaders?: false | ValidateHeadersFunction;
     routes?: Route[];
     viewsPath?: string;
     viewsExtension?: string;
@@ -151,7 +154,7 @@ export interface ExpressRequest extends express.Request {
     };
     sessionID?: string;
     authType?: AuthType | number;
-    validateHeaders?: false | ((request: ExpressRequest, firebaseApp: admin.app.App, firestore: admin.firestore.Firestore) => boolean);
+    validateHeaders?: false | ValidateHeadersFunction;
     rawBody?: Buffer;
     sanitize?: (value: any) => any;
     models?: {
@@ -164,7 +167,7 @@ export interface Route {
     path: PathParams;
     component: typeof Component;
     authType?: AuthType | number;
-    validateHeaders?: false | ((request: ExpressRequest, firebaseApp: admin.app.App, firestore: admin.firestore.Firestore) => boolean);
+    validateHeaders?: false | ValidateHeadersFunction;
 }
 export declare type FirestoreWhereFilterOp = '<' | '<=' | '==' | '>=' | '>' | 'array-contains';
 export interface ComponentAction {
