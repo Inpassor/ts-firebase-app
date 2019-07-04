@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import { isEmpty } from '@inpassor/functions';
 
 import {
     Data,
@@ -38,6 +39,7 @@ export class Model implements IModel {
     private _idSchema: ModelFieldSchema = null;
     private _schema: { [key: string]: ModelFieldSchema } = {};
     private _fieldNames: string[] = null;
+    private _originalData: Data = {};
     private _data: Data = {};
     private _writeResult: admin.firestore.WriteResult = null;
 
@@ -80,12 +82,15 @@ export class Model implements IModel {
         return false;
     }
 
-    public setValue(fieldName: string, value: any): boolean {
+    public setValue(fieldName: string, value: any, storeToOriginal = false): boolean {
         const schema = this._schema[fieldName];
         if (schema) {
             if (!schema.validate || schema.validate(value)) {
                 if (schema.set && !schema.set(value)) {
                     return false;
+                }
+                if (storeToOriginal) {
+                    this._originalData[fieldName] = value;
                 }
                 this._data[fieldName] = value;
                 return true;
@@ -94,11 +99,11 @@ export class Model implements IModel {
         return false;
     }
 
-    public setValues(values: Data): boolean {
+    public setValues(values: Data, storeToOriginal = false): boolean {
         if (values && Object.keys(values).length) {
             for (const fieldName in values) {
                 if (values.hasOwnProperty(fieldName)) {
-                    if (!this.setValue(fieldName, values[fieldName])) {
+                    if (!this.setValue(fieldName, values[fieldName], storeToOriginal)) {
                         return false;
                     }
                 }
@@ -137,13 +142,20 @@ export class Model implements IModel {
         return undefined;
     }
 
-    public getValue(fieldName: string): any {
+    public getValue(fieldName: string, forUpdate = false): any {
         const schema = this._schema[fieldName];
         if (schema) {
             if (schema.get) {
                 return schema.get();
             }
-            return this._data.hasOwnProperty(fieldName) ? this._data[fieldName] : undefined;
+            const value = this._data[fieldName];
+            if (forUpdate) {
+                const originalValue = this._originalData[fieldName];
+                if (value === originalValue) {
+                    return undefined;
+                }
+            }
+            return value;
         }
         return undefined;
     }
@@ -158,13 +170,12 @@ export class Model implements IModel {
     }
 
     public getValuesForUpdate(): Data {
-        // TODO: update only fields with changed values
         const data: Data = {};
         if (this._idSchema) {
             const idKey = this._idSchema.key;
             for (const fieldName of this.fieldNames) {
                 if (fieldName !== idKey) {
-                    const value = this.getValue(fieldName);
+                    const value = this.getValue(fieldName, true);
                     if (value !== undefined) {
                         data[fieldName] = value;
                     }
@@ -197,7 +208,7 @@ export class Model implements IModel {
     public update(values?: Data): Promise<admin.firestore.WriteResult> {
         return new Promise((resolve, reject) => {
             if (this.documentReference) {
-                if (!values || this.setValues(values)) {
+                if (isEmpty(values) || this.setValues(values)) {
                     this.documentReference.update(this.getValuesForUpdate()).then((writeResult) => {
                         resolve(this._normalizeWriteResult(writeResult));
                     }, (error: any) => reject(error));
@@ -219,7 +230,7 @@ export class Model implements IModel {
             && snapshot.ref
         ) {
             this.documentReference = snapshot.ref;
-            if (this.documentReference && this.setValues(snapshot.data())) {
+            if (this.documentReference && this.setValues(snapshot.data(), true)) {
                 this.createTime = snapshot.createTime;
                 this.updateTime = snapshot.updateTime;
                 this.readTime = snapshot.readTime;

@@ -22,6 +22,7 @@ export declare class Model implements IModel {
     private _idSchema;
     private _schema;
     private _fieldNames;
+    private _originalData;
     private _data;
     private _writeResult;
     [key: string]: any;
@@ -29,12 +30,12 @@ export declare class Model implements IModel {
     init(options: ModelOptions): void;
     readonly fieldNames: string[];
     set(target: Model, key: string, value: any): boolean;
-    setValue(fieldName: string, value: any): boolean;
-    setValues(values: Data): boolean;
+    setValue(fieldName: string, value: any, storeToOriginal?: boolean): boolean;
+    setValues(values: Data, storeToOriginal?: boolean): boolean;
     deleteField(fieldName: string): boolean;
     deleteFields(fieldNames: string[]): boolean;
     get(target: Model, key: string): any;
-    getValue(fieldName: string): any;
+    getValue(fieldName: string, forUpdate?: boolean): any;
     getValues(fieldNames?: string[]): Data;
     getValuesForUpdate(): Data;
     setId(id: string): boolean;
