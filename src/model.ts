@@ -142,27 +142,28 @@ export class Model implements IModel {
         return undefined;
     }
 
-    public getValue(fieldName: string, forUpdate = false): any {
+    public getValue(fieldName: string): any {
         const schema = this._schema[fieldName];
         if (schema) {
-            if (schema.get) {
-                return schema.get();
-            }
-            const value = this._data[fieldName];
-            if (forUpdate) {
-                const originalValue = this._originalData[fieldName];
-                if (value === originalValue) {
-                    return undefined;
-                }
-            }
-            return value;
+            const value = schema.get ? schema.get() : this._data[fieldName];
+            return value === admin.firestore.FieldValue.delete() ? undefined : value;
+        }
+        return undefined;
+    }
+
+    public getValueForUpdate(fieldName: string): any {
+        const schema = this._schema[fieldName];
+        if (schema) {
+            const value = schema.get ? schema.get() : this._data[fieldName];
+            const originalValue = this._originalData[fieldName];
+            return value === originalValue ? undefined : value;
         }
         return undefined;
     }
 
     public getValues(fieldNames?: string[]): Data {
         const data: Data = {};
-        const _fieldNames = fieldNames && fieldNames.length ? fieldNames : this.fieldNames;
+        const _fieldNames = (fieldNames && fieldNames.length) ? fieldNames : this.fieldNames;
         for (const fieldName of _fieldNames) {
             data[fieldName] = this.getValue(fieldName);
         }
@@ -175,7 +176,7 @@ export class Model implements IModel {
             const idKey = this._idSchema.key;
             for (const fieldName of this.fieldNames) {
                 if (fieldName !== idKey) {
-                    const value = this.getValue(fieldName, true);
+                    const value = this.getValueForUpdate(fieldName);
                     if (value !== undefined) {
                         data[fieldName] = value;
                     }

@@ -35,7 +35,8 @@ export declare class Model implements IModel {
     deleteField(fieldName: string): boolean;
     deleteFields(fieldNames: string[]): boolean;
     get(target: Model, key: string): any;
-    getValue(fieldName: string, forUpdate?: boolean): any;
+    getValue(fieldName: string): any;
+    getValueForUpdate(fieldName: string): any;
     getValues(fieldNames?: string[]): Data;
     getValuesForUpdate(): Data;
     setId(id: string): boolean;
