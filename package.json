@@ -1,6 +1,6 @@
 {
     "name": "@inpassor/firebase-app",
-    "version": "0.3.34",
+    "version": "0.3.35",
     "license": "MIT",
     "author": "Oleg V. Kuzmin",
     "description": "Firebase Express application",
@@ -39,7 +39,7 @@
         "express": "^4.17.1",
         "express-sanitizer": "^1.0.5",
         "express-session": "^1.16.2",
-        "firebase-admin": "^8.5.0",
+        "firebase-admin": "^8.6.0",
         "firebase-functions": "^3.2.0",
         "helmet": "^3.21.0"
     },
