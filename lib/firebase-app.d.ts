@@ -1,3 +1,3 @@
-import * as functions from 'firebase-functions';
+import { RuntimeOptions, HttpsFunction } from 'firebase-functions';
 import { AppConfig } from './interfaces';
-export declare const firebaseApp: (getConfig: AppConfig | Promise<AppConfig>) => functions.HttpsFunction;
+export declare const firebaseApp: (getConfig: AppConfig | Promise<AppConfig>, runtimeOptions?: RuntimeOptions) => HttpsFunction;

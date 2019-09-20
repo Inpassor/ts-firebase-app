@@ -1,4 +1,3 @@
-import { RuntimeOptions } from 'firebase-functions';
 import { Model } from '../model';
 import { AppConfigCache } from './app-config-cache';
 import { AppConfigFirebase } from './app-config-firebase';
@@ -13,7 +12,6 @@ import { ExpressRequest } from './express-request';
 import { Route } from './route';
 import { ValidateHeadersFunction } from './validate-headers-function';
 export interface AppConfig {
-    runtimeOptions?: RuntimeOptions;
     authType?: AuthType | number;
     validateHeaders?: false | ValidateHeadersFunction;
     routes?: Route[];
