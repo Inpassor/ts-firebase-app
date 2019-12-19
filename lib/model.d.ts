@@ -28,7 +28,7 @@ export declare class Model implements IModel {
     [key: string]: any;
     constructor(options: ModelOptions);
     init(options: ModelOptions): void;
-    readonly fieldNames: string[];
+    get fieldNames(): string[];
     set(target: Model, key: string, value: any): boolean;
     setValue(fieldName: string, value: any, storeToOriginal?: boolean): boolean;
     setValues(values: Data, storeToOriginal?: boolean): boolean;
