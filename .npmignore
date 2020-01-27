@@ -1,0 +1,9 @@
+.idea/
+node_modules/
+npm-debug.log
+firebase-debug.log
+src/
+.editorconfig
+.eslintrc.js
+.gitattributes
+tsconfig.json
