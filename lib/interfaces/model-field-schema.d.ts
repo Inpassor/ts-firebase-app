@@ -6,3 +6,4 @@ export interface ModelFieldSchema {
     get?: () => any;
     validate?: (value: any) => boolean;
 }
+export declare const isModelFieldSchema: (modelFieldSchema: any) => modelFieldSchema is ModelFieldSchema;

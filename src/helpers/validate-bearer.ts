@@ -4,7 +4,7 @@ export const validateBearer = (request: ExpressRequest): boolean => {
     const config = request.app.config;
     if (config.bearer) {
         const authorizationHeader = config.bearer.authHeaderName
-            ? <string>(request.headers[config.bearer.authHeaderName] || '')
+            ? (request.headers[config.bearer.authHeaderName] || '') as string
             : request.headers.authorization || '';
         if (authorizationHeader.startsWith('Bearer ')) {
             const token = authorizationHeader.split('Bearer ')[1];

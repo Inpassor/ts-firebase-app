@@ -1,10 +1,9 @@
 import * as admin from 'firebase-admin';
-import {Model} from '../model';
-import {Data} from './data';
-import {FirestoreWhereFilterOp} from './firestore-where-filter-op';
-import {ModelOptions} from './model-options';
-
-export interface IModel extends ModelOptions {
+import { Model } from '../model';
+import { Data } from './data';
+import { FirestoreWhereFilterOp } from './firestore-where-filter-op';
+import { ModelOptions } from './model-options';
+export interface Model extends ModelOptions {
     fieldNames: string[];
     collectionReference: admin.firestore.CollectionReference;
     documentReference: admin.firestore.DocumentReference;
@@ -27,14 +26,11 @@ export interface IModel extends ModelOptions {
     update: (values?: Data) => Promise<admin.firestore.WriteResult>;
     setFromSnapshot: (snapshot: admin.firestore.DocumentSnapshot) => boolean;
     collectionReferenceError: (reject: (reason?: any) => void) => void;
-
-    /* static */
-    create: <T extends Model>(modelName_or_id?: string, id?: string) => Promise<T>;
+    create: <T extends Model>(modelNameOrId?: string, id?: string) => Promise<T>;
     add: <T extends Model>(id: string, values: Data) => Promise<T>;
-    find: <T extends Model>(id_or_fieldName?: string, opStr?: FirestoreWhereFilterOp, value?: any) => Promise<T | T[]>;
+    find: <T extends Model>(idOrFieldName?: string, opStr?: FirestoreWhereFilterOp, value?: any) => Promise<T | T[]>;
     findById: <T extends Model>(id: string) => Promise<T>;
     findWhere: <T extends Model>(fieldName: string, opStr: FirestoreWhereFilterOp, value: any) => Promise<T>;
     findAll: <T extends Model>() => Promise<T[]>;
-
     [key: string]: any;
 }

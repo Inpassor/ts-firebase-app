@@ -1,15 +1,16 @@
 import * as admin from 'firebase-admin';
-import { isEmpty } from '@inpassor/functions';
+import {isEmpty} from '@inpassor/functions';
 
 import {
     Data,
     ExpressRequest,
     ExpressResponse,
     FirestoreWhereFilterOp,
-    IModel,
+    Model as IModel,
     ModelOptions,
     ModelSchema,
     ModelFieldSchema,
+    isModelFieldSchema,
     ModelFieldType,
 } from './interfaces';
 
@@ -43,7 +44,7 @@ export class Model implements IModel {
     private _data: Data = {};
     private _writeResult: admin.firestore.WriteResult = null;
 
-    [key: string]: any;
+    [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     constructor(options: ModelOptions) {
         this.init(options);
@@ -70,6 +71,7 @@ export class Model implements IModel {
         return this._fieldNames;
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public set(target: Model, key: string, value: any): boolean {
         if (target.hasOwnProperty(key)) {
             target[key] = value;
@@ -82,6 +84,7 @@ export class Model implements IModel {
         return false;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public setValue(fieldName: string, value: any, storeToOriginal = false): boolean {
         const schema = this._schema[fieldName];
         if (schema) {
@@ -131,6 +134,7 @@ export class Model implements IModel {
         return true;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public get(target: Model, key: string): any {
         if (target[key] !== undefined) {
             return target[key];
@@ -142,6 +146,7 @@ export class Model implements IModel {
         return undefined;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public getValue(fieldName: string): any {
         const schema = this._schema[fieldName];
         if (schema) {
@@ -151,6 +156,7 @@ export class Model implements IModel {
         return undefined;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public getValueForUpdate(fieldName: string): any {
         const schema = this._schema[fieldName];
         if (schema) {
@@ -212,7 +218,7 @@ export class Model implements IModel {
                 if (isEmpty(values) || this.setValues(values)) {
                     this.documentReference.update(this.getValuesForUpdate()).then((writeResult) => {
                         resolve(this._normalizeWriteResult(writeResult));
-                    }, (error: any) => reject(error));
+                    }, (error) => reject(error));
                 } else {
                     reject(`Cannot update values for the model "${this.modelName}"`);
                 }
@@ -243,39 +249,41 @@ export class Model implements IModel {
         return false;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public collectionReferenceError(reject: (reason?: any) => void): void {
         reject(`Cannot fetch the collection "${this.collection}"`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static collectionReferenceError(reject: (reason?: any) => void): void {
         reject(`Cannot fetch the collection "${this.collection}"`);
     }
 
     public create;
 
-    public static create<T extends Model>(modelName_or_id?: string, _id?: string): Promise<T> {
+    public static create<T extends Model>(modelNameOrId?: string, _id?: string): Promise<T> {
         let modelName = this.modelName || this.name;
         let id: string = null;
-        if (typeof modelName_or_id === 'string' && _id) {
-            modelName = modelName_or_id;
+        if (typeof modelNameOrId === 'string' && _id) {
+            modelName = modelNameOrId;
             id = _id;
-        } else if (modelName_or_id && !_id) {
-            if (typeof modelName_or_id === 'string') {
-                modelName = modelName_or_id || modelName;
+        } else if (modelNameOrId && !_id) {
+            if (typeof modelNameOrId === 'string') {
+                modelName = modelNameOrId || modelName;
             } else {
-                id = modelName_or_id;
+                id = modelNameOrId;
             }
         }
         return new Promise<T>((resolve, reject) => {
             if (this.request.models && this.request.models[modelName]) {
-                const model: T = <T>new this.request.models[modelName]({
+                const model: T = new this.request.models[modelName]({
                     request: this.request,
                     response: this.response,
                     firestore: this.firestore,
                     collection: this.collection,
                     modelName,
                     schema: this.schema,
-                });
+                }) as T;
                 setTimeout(() => {
                     if (model.collectionReference && !id || id && model.setId(id)) {
                         resolve(model);
@@ -302,7 +310,7 @@ export class Model implements IModel {
                                 model.setId(id);
                                 model.documentReference.set(model.getValuesForUpdate()).then(() => {
                                     resolve(model);
-                                }, (error: any) => reject(error));
+                                }, (error) => reject(error));
                             } else {
                                 reject(`Cannot set values for a new model "${this.modelName}"`);
                             }
@@ -325,11 +333,12 @@ export class Model implements IModel {
 
     public find;
 
-    public static find<T extends Model>(id_or_fieldName?: string, opStr?: FirestoreWhereFilterOp, value?: any): Promise<T | T[]> {
-        if (id_or_fieldName && opStr) {
-            return this.findWhere<T>(id_or_fieldName, opStr, value);
-        } else if (typeof id_or_fieldName === 'string' && !opStr) {
-            return this.findById<T>(id_or_fieldName);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public static find<T extends Model>(idOrFieldName?: string, opStr?: FirestoreWhereFilterOp, value?: any): Promise<T | T[]> {
+        if (idOrFieldName && opStr) {
+            return this.findWhere<T>(idOrFieldName, opStr, value);
+        } else if (typeof idOrFieldName === 'string' && !opStr) {
+            return this.findById<T>(idOrFieldName);
         } else {
             return this.findAll();
         }
@@ -352,7 +361,7 @@ export class Model implements IModel {
                                         code: 404,
                                     });
                                 }
-                            }, (error: any) => reject(error));
+                            }, (error) => reject(error));
                         } else {
                             reject(`Cannot fetch a model "${this.modelName}"`);
                         }
@@ -372,6 +381,7 @@ export class Model implements IModel {
 
     public findWhere;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static findWhere<T extends Model>(fieldName: string, opStr: FirestoreWhereFilterOp, value: any): Promise<T> {
         return this._createAndRun((model: T, resolve, reject) => {
             const _fieldName = fieldName.split('.')[0];
@@ -404,7 +414,7 @@ export class Model implements IModel {
                             } else {
                                 reject(`Cannot query a model "${model.modelName}"`);
                             }
-                        }, (error: any) => reject(error));
+                        }, (error) => reject(error));
                     } else {
                         model.collectionReferenceError(reject);
                     }
@@ -445,7 +455,7 @@ export class Model implements IModel {
                                 });
                                 Promise.all(promises).then((models: T[]) => {
                                     resolve(models);
-                                }, (error: any) => reject(error));
+                                }, (error) => reject(error));
                             } else {
                                 reject({
                                     code: 404,
@@ -454,7 +464,7 @@ export class Model implements IModel {
                         } else {
                             reject(`Cannot query a model "${this.modelName}"`);
                         }
-                    }, (error: any) => reject(error));
+                    }, (error) => reject(error));
                 } else {
                     this.collectionReferenceError(reject);
                 }
@@ -468,10 +478,11 @@ export class Model implements IModel {
         return new Promise((resolve, reject) => {
             this.create().then((model: T) => {
                 callback.call(this, model, resolve, reject);
-            }, (error: any) => reject(error));
+            }, (error) => reject(error));
         });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _normalizeWriteResult(writeResult: any): admin.firestore.WriteResult {
         const result: admin.firestore.WriteResult = writeResult;
         this._writeResult = result;
@@ -480,19 +491,16 @@ export class Model implements IModel {
 
     private static _normalizeElementSchema(key: string, schema: ModelFieldSchema | ModelFieldType): ModelFieldSchema {
         if (schema) {
-            let result = <any>schema;
-            if (result.type === undefined) {
-                result = {
-                    type: <ModelFieldType>schema,
-                    key,
-                };
-            } else {
-                result = <ModelFieldSchema>schema;
-                if (!result.key) {
-                    result.key = key;
+            if (isModelFieldSchema(schema)) {
+                if (!schema.key) {
+                    schema.key = key;
                 }
+                return schema;
             }
-            return result;
+            return {
+                type: schema,
+                key,
+            };
         }
         return null;
     }
@@ -503,12 +511,14 @@ export class Model implements IModel {
             throw new Error(`The Schema of the model ${this.modelName} is empty`);
         }
         for (const key in this.schema) {
-            const schema = Model._normalizeElementSchema(key, this.schema[key]);
-            if (schema) {
-                if (schema.type === ModelFieldType.id && !this._idSchema) {
-                    this._idSchema = schema;
+            if (this.schema.hasOwnProperty(key)) {
+                const schema = Model._normalizeElementSchema(key, this.schema[key]);
+                if (schema) {
+                    if (schema.type === ModelFieldType.id && !this._idSchema) {
+                        this._idSchema = schema;
+                    }
+                    this._schema[key] = schema;
                 }
-                this._schema[key] = schema;
             }
         }
         if (!this._idSchema) {

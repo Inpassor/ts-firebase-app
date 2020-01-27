@@ -22,7 +22,7 @@ import {
 import {FirestoreStore} from './helpers';
 
 export const expressApp = (config: AppConfig): Express => {
-    const app = <Express>express();
+    const app = express() as Express;
     app.config = config;
     app.env = process.env.NODE_ENV;
 
@@ -39,7 +39,7 @@ export const expressApp = (config: AppConfig): Express => {
         const appOptions: {
             projectId?: string;
             credential?: admin.credential.Credential;
-            databaseAuthVariableOverride?: Object;
+            databaseAuthVariableOverride?: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
             databaseURL?: string;
             serviceAccountId?: string;
             storageBucket?: string;
@@ -48,7 +48,7 @@ export const expressApp = (config: AppConfig): Express => {
             projectId?: string;
             keyFilename?: string;
             timestampsInSnapshots: boolean;
-            [key: string]: any;
+            [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
         } = {
             timestampsInSnapshots: config.firebase.timestampsInSnapshots,
         };
@@ -88,7 +88,7 @@ export const expressApp = (config: AppConfig): Express => {
 
     if (config.session) {
         const sessionOptions: {
-            store?: any;
+            store?: FirestoreStore;
         } = {};
         if (config.session.firestoreCollection && app.locals.firestore && !config.session.store) {
             sessionOptions.store = new FirestoreStore({
@@ -127,15 +127,15 @@ export const expressApp = (config: AppConfig): Express => {
 
     if (config.sanitizer) {
         app.use(sanitizer(config.sanitizer));
-        app.use(<any>sanitize);
+        app.use(sanitize);
     }
 
     if (config.models) {
-        app.use(<any>models(config.models));
+        app.use(models(config.models));
     }
 
     if (config.routes) {
-        app.use(<any>routes({
+        app.use(routes({
             routes: config.routes,
             authType: config.authType || AuthType.none,
             validateHeaders: config.validateHeaders || false,

@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import { Data, ExpressRequest, ExpressResponse, FirestoreWhereFilterOp, IModel, ModelOptions, ModelSchema } from './interfaces';
+import { Data, ExpressRequest, ExpressResponse, FirestoreWhereFilterOp, Model as IModel, ModelOptions, ModelSchema } from './interfaces';
 export declare class Model implements IModel {
     static modelName: string;
     modelName: string;
@@ -46,11 +46,11 @@ export declare class Model implements IModel {
     collectionReferenceError(reject: (reason?: any) => void): void;
     static collectionReferenceError(reject: (reason?: any) => void): void;
     create: any;
-    static create<T extends Model>(modelName_or_id?: string, _id?: string): Promise<T>;
+    static create<T extends Model>(modelNameOrId?: string, _id?: string): Promise<T>;
     add: any;
     static add<T extends Model>(id: string, values: Data): Promise<T>;
     find: any;
-    static find<T extends Model>(id_or_fieldName?: string, opStr?: FirestoreWhereFilterOp, value?: any): Promise<T | T[]>;
+    static find<T extends Model>(idOrFieldName?: string, opStr?: FirestoreWhereFilterOp, value?: any): Promise<T | T[]>;
     findById: any;
     static findById<T extends Model>(id: string): Promise<T>;
     findWhere: any;

@@ -15,7 +15,7 @@ export const firebaseApp = (getConfig: AppConfig | Promise<AppConfig>, runtimeOp
                     const app = expressApp(config);
                     resolve(app(request, response));
                 },
-                (error: any) => reject(error),
+                error => reject(error),
             );
         });
     });

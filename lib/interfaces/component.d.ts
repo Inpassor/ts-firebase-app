@@ -1,7 +1,6 @@
-import {ComponentAction} from './component-action';
-import {ComponentOptions} from './component-options';
-
-export interface IComponent extends ComponentOptions {
+import { ComponentAction } from './component-action';
+import { ComponentOptions } from './component-options';
+export interface Component extends ComponentOptions {
     get?: ComponentAction;
     post?: ComponentAction;
     put?: ComponentAction;
@@ -30,13 +29,8 @@ export interface IComponent extends ComponentOptions {
     connect?: ComponentAction;
     all?: ComponentAction;
     init: (options: ComponentOptions) => void;
-    // transaction: (updateFunction: <T>(transaction: FirestoreTransaction) => Promise<T>) => Promise<any>;
-    // batch: () => FirestoreWriteBatch;
     sendError: (error: any) => void;
-
-    /* static */
     getCodeFromError: (error: any) => number;
-    getMessageFromError: (error: any) => any;
-
+    getMessageFromError: (error: any) => string;
     [key: string]: any;
 }

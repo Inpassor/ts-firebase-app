@@ -39,9 +39,9 @@ const methods = [
 ];
 
 export const routes = (options: {
-    routes: Route[],
-    authType?: AuthType | number,
-    validateHeaders?: false | ValidateHeadersFunction,
+    routes: Route[];
+    authType?: AuthType | number;
+    validateHeaders?: false | ValidateHeadersFunction;
 }) => {
     return (request: ExpressRequest, response: ExpressResponse, next: () => void): void => {
         const _routes = options.routes || [];
@@ -81,7 +81,7 @@ export const routes = (options: {
                                     _response.sendStatus(403);
                                 }
                             })
-                            .catch((error: any) => {
+                            .catch(error => {
                                 throw new Error(error);
                             });
                     });

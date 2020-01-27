@@ -22,7 +22,7 @@ export interface AppConfig {
     sentry?: {
         dsn: string;
     };
-    helmet?: { [key: string]: any };
+    helmet?: { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
     cache?: AppConfigCache;
     firebase?: AppConfigFirebase;
     session?: {
@@ -44,7 +44,7 @@ export interface AppConfig {
         rolling?: boolean;
         firestoreCollection?: string;
         unset?: 'destroy' | 'keep';
-        store?: any;
+        store?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     };
     cors?: CorsOptions | CorsOptionsDelegate;
     cookieParser?: {
@@ -63,7 +63,7 @@ export interface AppConfig {
     bearer?: {
         token: string;
         authHeaderName?: string;
-    },
+    };
     aws?: {
         appSync?: {
             accessKeyId: string;
@@ -71,8 +71,8 @@ export interface AppConfig {
             authHeaderName?: string;
             authDateHeaderName?: string;
             validateBody?: boolean;
-        },
+        };
     };
 
-    [key: string]: any;
+    [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }

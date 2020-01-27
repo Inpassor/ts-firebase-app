@@ -1,1 +1,1 @@
-{"version":3,"file":"model-field-schema.js","sourceRoot":"","sources":["../../src/interfaces/model-field-schema.ts"],"names":[],"mappings":""}
+{"version":3,"file":"model-field-schema.js","sourceRoot":"","sources":["../../src/interfaces/model-field-schema.ts"],"names":[],"mappings":";;AAUA,8DAA8D;AACjD,QAAA,kBAAkB,GAAG,CAAC,gBAAqB,EAAwC,EAAE;IAC9F,OAAO,gBAAgB,CAAC,cAAc,CAAC,MAAM,CAAC,CAAC;AACnD,CAAC,CAAC"}

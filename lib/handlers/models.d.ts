@@ -1,5 +1,5 @@
-import { ExpressRequest, ExpressResponse } from '../interfaces';
+import { ExpressRequest } from '../interfaces';
 import { Model } from '../model';
 export declare const models: (options: {
     [key: string]: typeof Model;
-}) => (request: ExpressRequest, response: ExpressResponse, next: () => void) => void;
+}) => (request: ExpressRequest, response: import("express").Response, next: () => void) => void;

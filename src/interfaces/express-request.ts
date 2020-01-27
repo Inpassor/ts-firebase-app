@@ -5,7 +5,7 @@ import {Express} from './express';
 import {ValidateHeadersFunction} from './validate-headers-function';
 
 export interface ExpressRequest extends express.Request {
-    app: Express,
+    app: Express;
     session?: {
         id: string;
         cookie: {
@@ -13,17 +13,17 @@ export interface ExpressRequest extends express.Request {
             maxAge?: number;
             originalMaxAge?: number;
         };
-        regenerate: (error: any) => void;
-        destroy: (error: any) => void;
-        reload: (error: any) => void;
-        save: (error: any) => void;
+        regenerate: (error) => void;
+        destroy: (error) => void;
+        reload: (error) => void;
+        save: (error) => void;
         touch: () => void;
-        [key: string]: any;
+        [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     };
     sessionID?: string;
     authType?: AuthType | number;
     validateHeaders?: false | ValidateHeadersFunction;
     rawBody?: Buffer;
-    sanitize?: (value: any) => any;
+    sanitize?: (value: any) => any; // eslint-disable-line @typescript-eslint/no-explicit-any
     models?: { [key: string]: typeof Model };
 }

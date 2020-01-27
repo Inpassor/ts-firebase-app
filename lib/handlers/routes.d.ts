@@ -1,6 +1,6 @@
-import { ExpressRequest, ExpressResponse, Route, ValidateHeadersFunction } from '../interfaces';
+import { ExpressRequest, Route, ValidateHeadersFunction } from '../interfaces';
 export declare const routes: (options: {
     routes: Route[];
     authType?: number;
     validateHeaders?: false | ValidateHeadersFunction;
-}) => (request: ExpressRequest, response: ExpressResponse, next: () => void) => void;
+}) => (request: ExpressRequest, response: import("express").Response, next: () => void) => void;

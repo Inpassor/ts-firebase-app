@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import {
-    IComponent,
+    Component as IComponent,
     ComponentOptions,
     ExpressRequest,
     ExpressResponse,
@@ -48,7 +48,7 @@ export class Component implements IComponent {
     }
     */
 
-    public sendError(error: any): void {
+    public sendError(error): void {
         const code = Component.getCodeFromError(error);
         const body = Component.getMessageFromError(error);
         if (body) {
@@ -70,18 +70,18 @@ export class Component implements IComponent {
 
     public getCodeFromError;
 
-    public static getCodeFromError(error: any): number {
+    public static getCodeFromError(error): number {
         const defaultCode = 500;
         if (typeof error === 'string') {
             return defaultCode;
         }
         const e = error.error || error;
-        return <number>e.code || defaultCode;
+        return e.code as number || defaultCode;
     }
 
     public getMessageFromError;
 
-    public static getMessageFromError(error: any): any {
+    public static getMessageFromError(error): string {
         if (typeof error === 'string') {
             return error;
         }
